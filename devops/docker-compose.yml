@@ -1,0 +1,18 @@
+# From the project's root folder
+# $ docker-compose -f devops/docker-compose.yml build
+# $ docker-compose -f devops/docker-compose.yml up --force-recreate
+
+---
+version: '3'
+
+services:
+    cendant-ua:
+        build:
+          context: ../
+          dockerfile: devops/Dockerfile
+        environment:
+          MONGO_JSON_CREDENTIALS: ${MONGO_JSON_CREDENTIALS}
+        #entrypoint: /bin/bash -c '/home/db2_cli_odbc_driver/clidriver/bin/db2level && set -x && ls -l /home/db2_cli_odbc_driver/clidriver/license && echo IBM_DB_HOME is $$IBM_DB_HOME'
+        entrypoint: /bin/bash -c 'source /opt/conda/etc/profile.d/conda.sh && cd /code && conda activate gtstext && source environment.sh && python "$${GTS_BASE}/workspace/gtsdataingest/gtsdataingest/core/bp/ingest_api.py" ingest-manifest-cv-watson-health "CV Employee Membership" true'
+        volumes:
+          - ../resources/confidential_input/db2license:/home/db2_cli_odbc_driver/clidriver/license

@@ -1,0 +1,36 @@
+language: python
+python:
+  # We don't actually use the Travis Python, but this keeps it organized.
+  - "3.6"
+env:
+  - LANGUAGE_VARIABILITY_RED_THRESHOLD=80
+install:
+  # Start: based on conda.io template
+  # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/use-conda-with-travis-ci.html#the-travis-yml-file
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - source "$HOME/miniconda/etc/profile.d/conda.sh"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+  # End: based conda.io template
+
+  # Project specific
+  - conda env create -f environment.yml
+  - conda activate gtstext
+  - source environment.sh
+  - ./setup/spacy.sh
+
+script:
+  - py.test -n auto -k 'not langvar'
+  - py.test -n auto -k langvar --no-print-logs --quiet | tee lv-test.log && RESULTS=$(tail -1 lv-test.log) && { FAILED=$(echo $RESULTS | cut -d " " -f 1) && PASSED=$(echo $RESULTS | cut -d " " -f 3) && TOTAL=$(( $FAILED + $PASSED )) && RATE=$(expr $PASSED \* 100 / $TOTAL ) && [[ $RATE -ge $LANGUAGE_VARIABILITY_RED_THRESHOLD ]] && echo "Success. $RATE % passed" || { echo "Failure. Only $RATE % passed" && false;} ;}
+
+notifications:
+  slack:
+    rooms:
+    - secure: qvcDJiOB5CY5IxcBvqdfrSgXdbD1BxX3TgrqQVOrsHSuWQpKu+sB4zesvqcOB9UG4zTM108qbFwDnZO15SmdPP4Ik4zykkxEmK3FDt2wXHluibDPPcs3wqgktkyDB/nRYPJFAVgsF0y02N+9upbJ4lSq6GlYOQkTXBjyI0WXae7Ru5GEiRlgCZTCKzz0UJmndScaLAZ6fqKNpp4ARgJAeAX0p+UVyrdygxJw7ET9zxmcTvCvsyRLvKNfQhcCaYo2rF+6E7oYMWOkP6wTR8zeVw0UO/MOJ3+oEluQs2NvgaAyFpuBy/wOyF9sz/cKoJ/v1Uiw4uTeVpEXnbwBMf82KOhHBBxMAgQSl82JEKBQOR/aXtPYl6xmGn6nKZ95dnwPlqcuHBNBS4oIo0B7+821Bf4MiHA/1Poo26kkQe0glXLu3yF2I/BOOtn5iQFMD8IpttN6jOz1rP9baabWll89M2gE8wPi/yAEvKxFPRh8rhBqF0Z3ufJWVeEw3LRoji1ZSDs8LVvlLIVb/9Vs1aQQa0J7dVE4CYbK8/SUid3TUqz7S21YwwRzNyV9TqfGijxhKoV9LvIltGxZNnyArR/1XcDdppKOUyO3OBZnnzwLHuf2bM5m9mS3uAe7xl9X73HL63eO0Zf0m/qbQMAYOFbXpYZhRplnQY6sxKAMDi7vXsI=
+    on_success: always
+    on_failure: always

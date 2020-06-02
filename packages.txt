@@ -1,0 +1,40 @@
+# Helps environment.sh set PYTHONPATH
+
+# Common Projects
+/workspace/gtsbase
+
+# Administrative (Task) Projects
+/workspace/gtstaskmda
+/workspace/gtstaskadmin
+
+# Data Source (Data) Projects
+/workspace/gtsdatamongo
+/workspace/gtsdatadict
+/workspace/gtsdatagraph
+/workspace/gtsdataingest
+/workspace/gtsdatabp
+/workspace/gtsdatadb2
+/workspace/gtsdatagit
+
+# Natural Language (NLU) Projects
+/workspace/gtsnlusvc
+/workspace/gtsnlutext
+/workspace/gtsnlutag
+/workspace/gtsnluflows
+/workspace/gtsnludialog
+
+# Final Output (Cendancy) Projects
+# cendant projects are "ascendancy"
+# they have to do with final results
+/workspace/gtscendantdim
+/workspace/gtscendalytics
+/workspace/gtscendantweb
+
+# Test Regression
+/workspace/gtstestsuite
+
+# Box API
+/workspace/gtsboxapi
+
+# Last package needs to have a line feed,
+# so keep this comment to close the line
