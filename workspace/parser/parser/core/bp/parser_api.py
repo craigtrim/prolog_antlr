@@ -59,6 +59,10 @@ def main():
     ast = ParsePrologAPI.parse(source_lines, print_output=True)
     df_ast = ParsePrologAPI.as_dataframe(ast, print_output=True)
 
+    from grapher.core.bp import GraphvizAPI
+
+    GraphvizAPI.dot(df_ast)
+
 
 if __name__ == '__main__':
     main()
