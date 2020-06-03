@@ -142,6 +142,25 @@ class PostProcessPrologAST(object):
         _iter(ast)
         return ast
 
+    @staticmethod
+    def _operator_renaming(ast: list) -> list:
+
+        def _type(item: dict) -> str:
+            if item['text'].lower() == 'and':
+                return 'Conjunction'
+            if item['text'].lower() == 'if':
+                return 'Conditional'
+            raise NotImplementedError(f"Unrecognized Operator Type: {item['text']}")
+
+        def _iter(items: list):
+            for item in items:
+                _iter(item['results'])
+                if item['type'] == 'Binary':
+                    item['type'] = _type(item)
+
+        _iter(ast)
+        return ast
+
     def process(self) -> list:
         normalized = self._ast
 
@@ -154,4 +173,3 @@ class PostProcessPrologAST(object):
         pprint.pprint(normalized)
 
         return normalized
-
