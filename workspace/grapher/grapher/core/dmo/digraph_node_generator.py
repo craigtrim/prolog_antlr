@@ -30,7 +30,7 @@ class DigraphNodeGenerator(object):
         :param graph_style:
             a graph style defined in a graph stylesheet
             e.g.:
-            -   resources/config/graph/graphviz_nlp_graph.yml
+            -   resources/config/graph/graphviz_prolog_graph.yml
             -   resources/config/graph/graphviz_big_graph.yml
         :param is_debug:
             True     increase log output at DEBUG level
@@ -48,31 +48,30 @@ class DigraphNodeGenerator(object):
     def process(self,
                 graph: Digraph,
                 a_node_id: str,
-                a_node_name: str,
-                a_node_type: str,
-                is_primary: bool,
-                is_variant: bool) -> Digraph:
+                a_node: dict) -> Digraph:
         """
         :param graph:
         :param a_node_id:
             a unique identifier for the node.
             will not be displayed on the graph.
-        :param a_node_name:
-            the label form of the node.
-            does not need to be unique.
-        :param a_node_type:
-        :param is_primary:
-        :param is_variant:
+        :param a_node:
+            the actual node
         :return:
         """
 
-        d_node_style = self._node_style_matcher.process(a_tag_type=a_node_type,
-                                                        is_variant=is_variant,
-                                                        is_primary=is_primary)
+        d_node_style = self._node_style_matcher.process(a_tag_type=a_node['type'])
+        a_node_label = self._text_cleanser.process(a_node['label'])
+        a_node_text = self._text_cleanser.process(a_node['text'])
 
-        a_node_name = self._text_cleanser.process(a_node_name)
+        def _label() -> str:
+            if 'text' not in d_node_style:
+                return a_node_label
+            if d_node_style['text'].lower() == 'false':
+                return ""
+            return d_node_style['text'].replace('P0', a_node_text)
+
         graph.node(a_node_id,
-                   label=a_node_name,
+                   label=_label(),
                    **d_node_style)
 
         return graph

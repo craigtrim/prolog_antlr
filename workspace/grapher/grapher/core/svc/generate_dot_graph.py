@@ -15,7 +15,7 @@ class GenerateDotGraph(object):
 
     def __init__(self,
                  df_ast: DataFrame,
-                 graph_style: str = "nlp",
+                 graph_style: str = "prolog",
                  is_debug: bool = True):
         """
         Created:
@@ -62,21 +62,37 @@ class GenerateDotGraph(object):
             row_text = a_row['Text']
 
             if row_type == 'clause':
-                return {'type': row_type, 'label': 'Clause'}
+                return {'type': row_type,
+                        'label': 'Clause',
+                        'text': row_text}
             elif row_type == 'atomic':
-                return {'type': row_type, 'label': ''}
+                return {'type': row_type,
+                        'label': '',
+                        'text': row_text}
             elif row_type == 'binary':
-                return {'type': row_type, 'label': row_text.upper()}
+                return {'type': row_type,
+                        'label': row_text.upper(),
+                        'text': row_text}
             elif row_type == 'string':
-                return {'type': row_type, 'label': row_text}
+                return {'type': row_type,
+                        'label': row_text,
+                        'text': row_text}
             elif row_type == 'name':
-                return {'type': row_type, 'label': row_text}
+                return {'type': row_type,
+                        'label': row_text,
+                        'text': row_text}
             elif row_type == 'termlist':
-                return {'type': row_type, 'label': 'List'}
+                return {'type': row_type,
+                        'label': 'List',
+                        'text': row_text}
             elif row_type == 'variable':
-                return {'type': row_type, 'label': row_text}
+                return {'type': row_type,
+                        'label': row_text,
+                        'text': row_text}
 
-            return {'type': row_type, 'label': row_type}
+            return {'type': row_type,
+                    'label': row_type,
+                    'text': row_text}
 
         def _node_dict() -> dict:
             d = {}
@@ -91,10 +107,7 @@ class GenerateDotGraph(object):
         for node_id in d_nodes:
             graph = self._node_generator.process(graph,
                                                  a_node_id=node_id,
-                                                 a_node_name=d_nodes[node_id]['label'],
-                                                 a_node_type=d_nodes[node_id]['type'],
-                                                 is_primary=True,
-                                                 is_variant=False)
+                                                 a_node=d_nodes[node_id])
 
     def _add_edges(self,
                    graph: Digraph) -> None:

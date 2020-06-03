@@ -15,6 +15,5 @@ class GraphvizAPI(object):
             df_ast: DataFrame):
         from grapher.core.svc import GenerateDotGraph
 
-        GenerateDotGraph(df_ast=df_ast,
-                         graph_style="nlp").process(file_name="output",
+        GenerateDotGraph(df_ast=df_ast).process(file_name="output",
                                                     engine="dot")

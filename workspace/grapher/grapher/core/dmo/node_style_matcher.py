@@ -36,31 +36,19 @@ class NodeStyleMatcher(object):
             "Default Node Style Undefined"]))
 
     def process(self,
-                a_tag_type: str,
-                is_variant: bool,
-                is_primary: bool) -> dict:
+                a_tag_type: str) -> dict:
         for node in self._graph_style["nodes"]:
             d_node = node["node"]
 
             if "conditions" in d_node:
                 d_conditions = d_node["conditions"]
 
-                def _matches_variant():
-                    if "is_variant" not in d_conditions:
-                        return True
-                    return d_conditions["is_variant"] == is_variant
-
-                def _matches_primary():
-                    if "is_primary" not in d_conditions:
-                        return True
-                    return d_conditions["is_primary"] == is_primary
-
                 def _matches_type():
                     if "type" not in d_conditions:
                         return True
                     return d_conditions["type"].lower() == a_tag_type.lower()
 
-                if _matches_primary() and _matches_variant() and _matches_type():
+                if _matches_type():
                     if "style" not in d_node:
                         raise NotImplementedError("\n".join([
                             "Matching Node Style Undefined"]))

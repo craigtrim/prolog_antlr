@@ -22,7 +22,7 @@ class DigraphTextCleanser(object):
         :param graph_style:
             a graph style defined in a graph stylesheet
             e.g.:
-            -   resources/config/graph/graphviz_nlp_graph.yml
+            -   resources/config/graph/graphviz_prolog_graph.yml
             -   resources/config/graph/graphviz_big_graph.yml
         :param is_debug:
             True     increase log output at DEBUG level
@@ -46,8 +46,26 @@ class DigraphTextCleanser(object):
             return some_text
         if not self._graph_style["graph"]["split_text"]:
             return some_text
-        if " " not in some_text:
-            return some_text
 
-        tokens = some_text.split(" ")
-        return "{}\\n{}".format(tokens[0], " ".join(tokens[1:]))
+        def _split_on_space() -> str:
+            tokens = some_text.split(" ")
+            return "{}\\n{}".format(tokens[0], " ".join(tokens[1:]))
+
+        def _split_on_if() -> str:
+            tokens = some_text.split(":-")
+            return "{}:-\\n\t{}".format(tokens[0], " ".join(tokens[1:]))
+
+        def _split_on_and() -> str:
+            tokens = some_text.split("),")
+            return "{}),\\n\t{}".format(tokens[0], " ".join(tokens[1:]))
+
+        if " " in some_text:
+            some_text = _split_on_space()
+
+        if ":-" in some_text:
+            some_text = _split_on_if()
+
+        if ")," in some_text:
+            some_text = _split_on_and()
+
+        return some_text

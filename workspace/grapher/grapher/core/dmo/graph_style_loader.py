@@ -20,7 +20,7 @@ class GraphStyleLoader(object):
     """
 
     def __init__(self,
-                 style_name: str = "nlp",
+                 style_name: str,
                  is_debug: bool = True):
         """
         Created:
@@ -56,13 +56,13 @@ class GraphStyleLoader(object):
     def _load(self,
               some_style_name) -> dict:
         def _relative_path():
-            if "nlp" in some_style_name.lower():
-                return "resources/config/graph/graphviz_nlp_graph.yml"
+            if "prolog" in some_style_name.lower():
+                return "resources/config/graph/graphviz_prolog_graph.yml"
             if "big" in some_style_name.lower():
                 return "resources/config/graph/graphviz_big_graph.yml"
             if "sentiment" in some_style_name.lower():
                 return "resources/config/graph/graphviz_sentiment_graph.yml"
-            raise NotImplementedError
+            raise NotImplementedError(f"Unrecognized Style: {some_style_name}")
 
         return self._file_to_yaml_by_relative_path(
             _relative_path())
