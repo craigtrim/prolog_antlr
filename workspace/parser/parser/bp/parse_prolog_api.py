@@ -2,13 +2,19 @@
 # -*- coding: UTF-8 -*-
 
 
+
+import json
+from pandas import DataFrame
+
+
 class ParsePrologAPI(object):
 
     def __init__(self):
         pass
 
     @staticmethod
-    def parse(source_lines: list) -> list:
+    def parse(source_lines: list,
+              as_dataframe: bool = False) -> list or DataFrame:
         from parser.svc import ParsePrologSource
         from parser.svc import BuildPrologAST
         from parser.svc import GeneratePandasDataFrame
@@ -17,35 +23,27 @@ class ParsePrologAPI(object):
             raise ValueError("Expected List Input")
 
         tree = ParsePrologSource(source_lines=source_lines).process()
+
         ast = BuildPrologAST(tree=tree).process()
-
-        df = GeneratePandasDataFrame(ast=ast).process()
-        from tabulate import tabulate
-
-        print(tabulate(df, tablefmt='psql', headers='keys'))
-
         if type(ast) != list:
             raise ValueError("Expected List Ouput")
 
-        return ast
+        print (json.dumps(ast))
+
+        if not as_dataframe:
+            return ast
+
+        df = GeneratePandasDataFrame(ast=ast).process()
+        if type(df) != DataFrame:
+            raise ValueError("Expected DataFrame Ouput")
+
+        return df
 
 
 def main():
     source_code = """
         parent("Bill", "John").
         parent("Pam", "Bill").
-        father(Person, Father) :- parent(Person, Father), person(Father, "male").
-        mother(Person, Mother) :- parent(Person, Mother), person(Mother, "female").
-
-        person('Bill', "male").
-        person("Pam", "female").
-
-        father(person("Bill", "male"), person("John", "male")).
-        father(person("Pam", "male"), person("Bill", "male")).
-        father(person("Sue", "female"), person("Jim", "male")).
-        grandfather(Person, Grandfather) :-
-            father(Father, Grandfather),
-            father(Person, Father).
     """
 
     source_lines = [x.strip() for x in source_code.split('\n')]
@@ -53,8 +51,8 @@ def main():
     tree = ParsePrologAPI.parse(source_lines)
     print(type(tree))
 
-    # import pprint
-    # pprint.pprint(tree, indent=4)
+    import pprint
+    pprint.pprint(tree, indent=4)
 
 
 if __name__ == '__main__':

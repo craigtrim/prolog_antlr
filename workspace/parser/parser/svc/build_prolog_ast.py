@@ -15,6 +15,12 @@ class BuildPrologAST(object):
 
     def __init__(self,
                  tree: PrologParser.P_textContext):
+        """
+        Created:
+            2-June-2020
+            craig.trim@ibm.com
+            *   https://github.com/craigtrim/prolog_antlr/issues/2
+        """
         self._tree = tree
 
     def _to_dict(self,

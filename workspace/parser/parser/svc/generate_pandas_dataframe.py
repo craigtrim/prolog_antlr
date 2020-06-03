@@ -17,6 +17,12 @@ class GeneratePandasDataFrame(object):
 
     def __init__(self,
                  ast: list):
+        """
+        Created:
+            2-June-2020
+            craig.trim@ibm.com
+            *   https://github.com/craigtrim/prolog_antlr/issues/1
+        """
         if type(ast) != list:
             raise ValueError("List Input Expected")
 
