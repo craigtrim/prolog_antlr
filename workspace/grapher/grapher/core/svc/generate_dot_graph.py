@@ -73,6 +73,8 @@ class GenerateDotGraph(object):
                 return {'type': row_type, 'label': row_text}
             elif row_type == 'termlist':
                 return {'type': row_type, 'label': 'List'}
+            elif row_type == 'variable':
+                return {'type': row_type, 'label': row_text}
 
             return {'type': row_type, 'label': row_type}
 
