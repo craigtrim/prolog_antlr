@@ -10,15 +10,17 @@ from tabulate import tabulate
 
 class ParsePrologAPI(object):
 
-    def __init__(self):
-        pass
+    def __init__(self,
+                 is_debug: bool = False):
+        self._is_debug = is_debug
 
-    @staticmethod
-    def as_dataframe(ast: list,
+    def as_dataframe(self,
+                     ast: list,
                      print_output: bool = False) -> DataFrame:
-        from parser.core.svc import GeneratePandasDataFrame
+        from parser.core.svc import GenerateASTDataFrame
 
-        df = GeneratePandasDataFrame(ast=ast).process()
+        df = GenerateASTDataFrame(ast=ast,
+                                  is_debug=self._is_debug).process()
         if type(df) != DataFrame:
             raise ValueError("Expected DataFrame Ouput")
 
@@ -27,8 +29,23 @@ class ParsePrologAPI(object):
 
         return df
 
-    @staticmethod
-    def parse(source_lines: list,
+    def post_process(self,
+                     ast: list,
+                     print_output: bool = False) -> list:
+        from parser.core.svc import PostProcessPrologAST
+
+        ast = PostProcessPrologAST(ast=ast,
+                                   is_debug=self._is_debug).process()
+        if type(ast) != list:
+            raise ValueError("Expected List Ouput")
+
+        if print_output:
+            print(json.dumps(ast))
+
+        return ast
+
+    def parse(self,
+              source_lines: list,
               print_output: bool = False) -> list:
         from parser.core.svc import ParsePrologSource
         from parser.core.svc import BuildPrologAST
@@ -36,9 +53,11 @@ class ParsePrologAPI(object):
         if type(source_lines) != list:
             raise ValueError("Expected List Input")
 
-        tree = ParsePrologSource(source_lines=source_lines).process()
+        tree = ParsePrologSource(source_lines=source_lines,
+                                 is_debug=self._is_debug).process()
 
-        ast = BuildPrologAST(tree=tree).process()
+        ast = BuildPrologAST(tree=tree,
+                             is_debug=self._is_debug).process()
         if type(ast) != list:
             raise ValueError("Expected List Ouput")
 
@@ -49,20 +68,35 @@ class ParsePrologAPI(object):
 
 
 def main():
-
     source_code = """
         parent("Bill", "John").
         parent("Pam", "Bill").
+        father(Person, Father) :- parent(Person, Father), person(Father, "male").
+        mother(Person, Mother) :- parent(Person, Mother), person(Mother, "female").
+        
+        person("Bill", "male").
+        person("Pam", "female").
+        
+        father(person("Bill", "male"), person("John", "male")).
+        father(person("Pam", "male"), person("Bill", "male")).
+        father(person("Sue", "female"), person("Jim", "male")).
+        grandfather(Person, Grandfather) :-
+            father(Father, Grandfather),
+            father(Person, Father).
     """
+    from grapher.core.bp import GraphvizAPI
+    IS_DEBUG = True
 
     source_lines = [x.strip() for x in source_code.split('\n')]
 
-    ast = ParsePrologAPI.parse(source_lines, print_output=True)
-    df_ast = ParsePrologAPI.as_dataframe(ast, print_output=True)
+    parser_api = ParsePrologAPI(is_debug=IS_DEBUG)
+    grapher_api = GraphvizAPI(is_debug=IS_DEBUG)
 
-    from grapher.core.bp import GraphvizAPI
+    ast = parser_api.parse(source_lines, print_output=False)
+    ast = parser_api.post_process(ast, print_output=False)
+    df_ast = parser_api.as_dataframe(ast, print_output=True)
 
-    GraphvizAPI.dot(df_ast)
+    grapher_api.dot(df_ast)
 
 
 if __name__ == '__main__':

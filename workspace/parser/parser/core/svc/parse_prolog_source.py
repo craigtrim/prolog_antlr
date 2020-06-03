@@ -2,8 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 
-from antlr4 import InputStream
 from antlr4 import CommonTokenStream
+from antlr4 import InputStream
+
 from parser.core.dmo import PrologLexer
 from parser.core.dmo import PrologParser
 
@@ -13,12 +14,14 @@ class ParsePrologSource(object):
         Generate an ANTLR tree structure """
 
     def __init__(self,
-                 source_lines: list):
+                 source_lines: list,
+                 is_debug: bool = False):
         if type(source_lines) != list:
             raise ValueError("List Input Expected")
 
         source_code = '\n'.join(source_lines)
         self._input_stream = InputStream(source_code)
+        self._is_debug = is_debug
 
     def process(self) -> PrologParser.P_textContext:
         lexer = PrologLexer(self._input_stream)

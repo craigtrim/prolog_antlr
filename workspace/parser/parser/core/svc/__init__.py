@@ -1,3 +1,4 @@
 from .build_prolog_ast import BuildPrologAST
+from .generate_ast_dataframe import GenerateASTDataFrame
 from .parse_prolog_source import ParsePrologSource
-from .generate_pandas_dataframe import GeneratePandasDataFrame
+from .postprocess_prolog_ast import PostProcessPrologAST

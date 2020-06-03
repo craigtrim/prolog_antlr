@@ -66,24 +66,13 @@ class GenerateDotGraph(object):
             elif row_type == 'atomic':
                 return {'type': row_type, 'label': ''}
             elif row_type == 'binary':
-                return {'type': row_type, 'label': 'Binary'}
+                return {'type': row_type, 'label': row_text.upper()}
             elif row_type == 'string':
                 return {'type': row_type, 'label': row_text}
             elif row_type == 'name':
                 return {'type': row_type, 'label': row_text}
             elif row_type == 'termlist':
                 return {'type': row_type, 'label': 'List'}
-            elif row_type == 'operator':
-                def _operator_text() -> str:
-                    if row_text == ',':
-                        return "AND"
-                    elif row_text == ';':
-                        return "OR"
-                    elif row_text == ":-":
-                        return "IF"
-                    raise ValueError(f"Not Recognized: {row_text}")
-
-                return {'type': row_type, 'label': _operator_text()}
 
             return {'type': row_type, 'label': row_type}
 

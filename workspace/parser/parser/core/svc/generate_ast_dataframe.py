@@ -2,16 +2,17 @@
 # -*- coding: UTF-8 -*-
 
 
-from pandas import DataFrame
 import pandas as pd
+from pandas import DataFrame
 
 
-class GeneratePandasDataFrame(object):
+class GenerateASTDataFrame(object):
     """ Given a Prolog AST as a list input
         Generate a Pandas Dataframe as output """
 
     def __init__(self,
-                 ast: list):
+                 ast: list,
+                 is_debug: bool = False):
         """
         Created:
             2-June-2020
@@ -22,6 +23,7 @@ class GeneratePandasDataFrame(object):
             raise ValueError("List Input Expected")
 
         self._ast = ast
+        self._is_debug = is_debug
 
     def _iter(self,
               results: list,

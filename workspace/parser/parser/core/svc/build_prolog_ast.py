@@ -6,6 +6,7 @@ from uuid import uuid1
 
 from antlr4.tree.Tree import ErrorNodeImpl
 from antlr4.tree.Tree import TerminalNodeImpl
+
 from parser.core.dmo import PrologParser
 
 
@@ -14,7 +15,8 @@ class BuildPrologAST(object):
         Generate an AST as a list for output """
 
     def __init__(self,
-                 tree: PrologParser.P_textContext):
+                 tree: PrologParser.P_textContext,
+                 is_debug: bool = False):
         """
         Created:
             2-June-2020
@@ -22,6 +24,7 @@ class BuildPrologAST(object):
             *   https://github.com/craigtrim/prolog_antlr/issues/2
         """
         self._tree = tree
+        self._is_debug = is_debug
 
     def _to_dict(self,
                  ctx_text: str,
