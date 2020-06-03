@@ -22,18 +22,42 @@ class BuildPrologAST(object):
             2-June-2020
             craig.trim@ibm.com
             *   https://github.com/craigtrim/prolog_antlr/issues/2
+        Updated:
+            3-Jun-2020
+            craig.trim@ibm.com
+            *   add UUID standardization
+                https://github.com/craigtrim/prolog_antlr/issues/6#issuecomment-638514140
         """
         self._tree = tree
         self._is_debug = is_debug
+        self._d_session_uuid = {}
+
+    def _cached_uuid_by_name(self,
+                             ctx_name: str,
+                             ctx_text: str) -> str:
+        if ctx_name not in self._d_session_uuid:
+            self._d_session_uuid[ctx_name] = {}
+        if ctx_text not in self._d_session_uuid[ctx_name]:
+            self._d_session_uuid[ctx_name][ctx_text] = str(uuid1())
+        return self._d_session_uuid[ctx_name][ctx_text]
 
     def _to_dict(self,
                  ctx_text: str,
                  ctx_name: str,
                  children: list) -> dict:
-        uuid = str(uuid1())
+
+        def _uuid() -> str:
+            if ctx_name.lower() == 'variable':
+                return self._cached_uuid_by_name(ctx_name='variable',
+                                                 ctx_text=ctx_text)
+            elif ctx_name.lower() == 'name':
+                return self._cached_uuid_by_name(ctx_name='name',
+                                                 ctx_text=ctx_text)
+
+            return str(uuid1())
 
         return {
-            "uid": uuid,
+            "uid": _uuid(),
             "type": ctx_name,
             "text": ctx_text,
             "results": self._iter_tree(children=children)}

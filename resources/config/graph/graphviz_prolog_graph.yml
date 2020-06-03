@@ -28,7 +28,7 @@ nodes: # node style
       conditions:
         type: compound
       style:
-        shape: 'diamond'
+        shape: 'circle'
         fixedsize: 'true'
         colorscheme: 'blues9'
         color: '6'

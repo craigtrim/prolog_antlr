@@ -148,31 +148,10 @@ class PostProcessPrologAST(object):
         normalized = self._atomic_string_transformation(normalized)
         normalized = self._binary_operator_transformation(normalized)
         normalized = self._termlist_elimination_transformation(normalized)
+        normalized = self._operator_renaming(normalized)
 
         import pprint
         pprint.pprint(normalized)
 
         return normalized
 
-        # results = []
-        # for _, row in self._df_ast.iterrows():
-        #     results.append({
-        #         "UUID": row['UUID'],
-        #         "Type": row['Type'],
-        #         "Text": row['Text'],
-        #         "Parent": row['Parent']})
-        #
-        # df = self._df_ast
-        # results = self._atomic_string_transformation(df)
-        #
-        # df_normalized = pd.DataFrame(results)
-        #
-        # if len(df_normalized) != len(self._df_ast):
-        #     print('\n'.join([
-        #         "DataFrame Transformation Complete",
-        #         f"\tOriginal Size: {len(self._df_ast)}",
-        #         f"\tTransformed Size: {len(df_normalized)}"]))
-        #
-        #     print(tabulate(df_normalized, headers='keys', tablefmt='psql'))
-        #
-        # return df_normalized
