@@ -5,11 +5,6 @@
 from pandas import DataFrame
 import pandas as pd
 
-from antlr4 import InputStream
-from antlr4 import CommonTokenStream
-from parser.dmo import PrologLexer
-from parser.dmo import PrologParser
-
 
 class GeneratePandasDataFrame(object):
     """ Given a Prolog AST as a list input

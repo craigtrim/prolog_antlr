@@ -1,0 +1,131 @@
+### ******************************************************************************************
+###                                        WARNING
+###                             all style values must be strings
+###
+### References:
+###   1. Graphviz Colors
+###      https://www.graphviz.org/doc/info/colors.html
+### ******************************************************************************************
+
+graph:
+  split_text: True
+
+nodes: # node style
+  - node: # a primary node
+      conditions:
+        is_primary: True
+        is_variant: False
+        type: tag
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '6'
+        fontcolor: 'white'
+        fontsize: '8'
+  - node: # a related node
+      conditions:
+        is_primary: False
+        is_variant: False
+        type: tag
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '4'
+        fontcolor: 'black'
+        fontsize: '8'
+  - node: # primary variant
+      conditions:
+        is_variant: True
+        type: tag
+      style:
+        shape: 'circle'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '1'
+        fontcolor: 'gray'
+        fontsize: '7'
+  - node: # any schema node
+      conditions:
+        type: schema
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '9'
+        fontcolor: 'white'
+        fontsize: '10'
+  - node: # default style
+      style:
+        size: '800,800'
+        shape: 'oval'
+        color: 'lightblue2'
+        style: 'filled'
+
+edges: # edge style
+  - edge:
+      predicate: schema
+      display_label: False
+      style:
+        colorscheme: 'bupu9'
+        color: '3'
+        arrowhead: 'vee'
+        style: 'dotted'
+        arrowsize: '0.5'
+  - edge:
+      predicate: feedback
+      display_label: False
+      style:
+        colorscheme: 'bupu9'
+        color: '8'
+        arrowhead: 'normal' # style of arrowhead at head end
+        arrowsize: '1.0' # scaling factor for arrowheads
+        style: 'filled' # bold, dotted filled
+  - edge:
+      predicate: variant
+      display_label: False
+      style:
+        colorscheme: 'bupu9'
+        color: '4'
+        arrowhead: 'vee'
+        style: 'solid'
+        arrowsize: '1.0'
+        fontsize: '8'
+  - edge:
+      predicate: implies
+      display_label: True
+      style:
+        colorscheme: 'bupu9'
+        color: '5'
+        arrowhead: normal
+        fontsize: '8'
+        weight: '1.5'
+  - edge:
+      predicate: similarto
+      display_label: True
+      style:
+        colorscheme: 'bupu9'
+        color: '6'
+        arrowhead: normal
+        fontsize: '8'
+        weight: '3.0'
+  - edge:
+      predicate: requires
+      display_label: True
+      style:
+        colorscheme: 'bupu9'
+        color: '7'
+        arrowhead: normal
+        fontsize: '8'
+        weight: '2.0'
+  - edge:
+      display_label: True
+      style:
+        color: 'black' # edge stroke color
+        fontcolor: 'black' # type face color
+        fontsize: '10' # point size of label
+        arrowhead: 'normal' # style of arrowhead at head end
+        arrowsize: '1.0' # scaling factor for arrowheads
+        style: 'filled' # bold, dotted filled
+

@@ -1,0 +1,51 @@
+### ******************************************************************************************
+###                                        WARNING
+###                             all style values must be strings
+###
+### References:
+###   1. Graphviz Colors
+###      https://www.graphviz.org/doc/info/colors.html
+### ******************************************************************************************
+
+graph:
+  split_text: False
+
+nodes: # node style
+  - node: # default style
+      style:
+        size: '150,150'
+        shape: 'oval'
+        color: 'lightblue2'
+        style: 'filled'
+
+edges: # edge style
+  - edge:
+      predicate: type-of
+      display_label: False
+      style:
+        color: 'gray'
+        arrowhead: 'vee'
+        style: 'dotted'
+        arrowsize: '0.5'
+  - edge:
+      predicate: implies
+      display_label: True
+      style:
+        color: red
+        arrowhead: normal
+  - edge:
+      predicate: similarto
+      display_label: True
+      style:
+        color: purple
+        arrowhead: normal
+  - edge:
+      display_label: True
+      style:
+        color: 'black' # edge stroke color
+        fontcolor: 'black' # type face color
+        fontsize: '10' # point size of label
+        arrowhead: 'normal' # style of arrowhead at head end
+        arrowsize: '1.0' # scaling factor for arrowheads
+        style: 'filled' # bold, dotted filled
+

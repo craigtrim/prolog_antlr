@@ -2,9 +2,11 @@ name: antlr
 channels:
   - conda-forge
 dependencies:
+  - PyYAML=5.1.2                # yaml parser
   - pip
   - pip:
-      - antlr4-python3-runtime
-      - fastapi==0.55.1
-      - pandas
-      - tabulate==0.8.7
+      - antlr4-python3-runtime  # antlr parser runtime
+      - fastapi==0.55.1         # OpenAuth 3.x and Swagger API lib
+      - pandas                  # dataframe processing and generation
+      - tabulate==0.8.7         # pretty printer for pandas dataframe
+      - graphviz==0.14          # create visual graphs in Jupyter. Available in other versions in conda as python-grapher

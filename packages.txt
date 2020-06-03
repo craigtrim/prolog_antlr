@@ -1,4 +1,5 @@
 work# Helps environment.sh set PYTHONPATH
 
 /workspace/parser
+/workspace/graphviz
 /workspace/web
