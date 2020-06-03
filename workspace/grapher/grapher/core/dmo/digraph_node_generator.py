@@ -2,7 +2,7 @@
 # -*- coding: UTF-8 -*-
 
 
-from grapher import Digraph
+from graphviz import Digraph
 
 
 class DigraphNodeGenerator(object):
@@ -47,13 +47,19 @@ class DigraphNodeGenerator(object):
 
     def process(self,
                 graph: Digraph,
+                a_node_id: str,
                 a_node_name: str,
                 a_node_type: str,
                 is_primary: bool,
                 is_variant: bool) -> Digraph:
         """
         :param graph:
+        :param a_node_id:
+            a unique identifier for the node.
+            will not be displayed on the graph.
         :param a_node_name:
+            the label form of the node.
+            does not need to be unique.
         :param a_node_type:
         :param is_primary:
         :param is_variant:
@@ -65,7 +71,7 @@ class DigraphNodeGenerator(object):
                                                         is_primary=is_primary)
 
         a_node_name = self._text_cleanser.process(a_node_name)
-        graph.node(a_node_name,
+        graph.node(a_node_id,
                    label=a_node_name,
                    **d_node_style)
 

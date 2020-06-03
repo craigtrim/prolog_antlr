@@ -11,57 +11,93 @@ graph:
   split_text: True
 
 nodes: # node style
-  - node: # a primary node
+  - node:
       conditions:
-        is_primary: True
-        is_variant: False
-        type: tag
+        type: clause
       style:
         shape: 'doublecircle'
         fixedsize: 'true'
         colorscheme: 'blues9'
         color: '6'
         fontcolor: 'white'
-        fontsize: '8'
-  - node: # a related node
+        fontsize: '6'
+  - node:
       conditions:
-        is_primary: False
-        is_variant: False
-        type: tag
+        type: termlist
+      style:
+        shape: 'folder'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '6'
+        fontcolor: 'black'
+        fontsize: '10'
+  - node:
+      conditions:
+        type: compound
+      style:
+        shape: 'terminator'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '4'
+        fontcolor: 'black'
+        fontsize: '10'
+  - node:
+      conditions:
+        type: binary
       style:
         shape: 'doublecircle'
         fixedsize: 'true'
         colorscheme: 'blues9'
         color: '4'
         fontcolor: 'black'
-        fontsize: '8'
-  - node: # primary variant
+        fontsize: '10'
+  - node:
       conditions:
-        is_variant: True
-        type: tag
+        type: atomic
+      style:
+        shape: 'point'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '4'
+        fontcolor: 'black'
+        fontsize: '6'
+  - node:
+      conditions:
+        type: operator
+      style:
+        shape: 'diamond'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '8'
+        fontcolor: 'white'
+        fontsize: '8'
+  - node:
+      conditions:
+        type: string
       style:
         shape: 'circle'
         fixedsize: 'true'
         colorscheme: 'blues9'
         color: '1'
         fontcolor: 'gray'
-        fontsize: '7'
-  - node: # any schema node
+        fontsize: '12'
+  - node:
       conditions:
-        type: schema
+        type: name
       style:
         shape: 'doublecircle'
         fixedsize: 'true'
         colorscheme: 'blues9'
         color: '9'
         fontcolor: 'white'
-        fontsize: '10'
+        fontsize: '12'
   - node: # default style
       style:
         size: '800,800'
         shape: 'oval'
         color: 'lightblue2'
         style: 'filled'
+        fontsize: '8'
 
 edges: # edge style
   - edge:

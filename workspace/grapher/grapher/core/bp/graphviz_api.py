@@ -16,7 +16,7 @@ class GraphvizAPI(object):
 
         GenerateDotGraph(df_ast=df_ast,
                          graph_style="nlp").process(file_name="output",
-                                                    engine="fdp")
+                                                    engine="dot")
 
 
 def main():

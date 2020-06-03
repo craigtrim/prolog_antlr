@@ -6,6 +6,7 @@ import os
 
 from graphviz import Digraph
 from pandas import DataFrame
+from pandas import Series
 
 
 class GenerateDotGraph(object):
@@ -47,7 +48,7 @@ class GenerateDotGraph(object):
         pass
 
     @staticmethod
-    def _cleanse_uuid(a_uuid: str) -> str:
+    def _cleanse(a_uuid: str) -> str:
         return f"UUID_{a_uuid.replace('-', '_').upper()}"
 
     def _add_nodes(self,
@@ -56,52 +57,71 @@ class GenerateDotGraph(object):
         :param graph:
         """
 
-        def _schema_elements() -> list:
-            s = set()
-            [s.add(self._cleanse_uuid(x)) for x in self._df_ast['UUID'].unique()]
-            return sorted(s)
+        def _label(a_row: Series) -> dict:
+            row_type = a_row['Type'].lower()
+            row_text = a_row['Text']
 
-        for schema in _schema_elements():
+            if row_type == 'clause':
+                return {'type': row_type, 'label': 'Clause'}
+            elif row_type == 'atomic':
+                return {'type': row_type, 'label': ''}
+            elif row_type == 'binary':
+                return {'type': row_type, 'label': 'Binary'}
+            elif row_type == 'string':
+                return {'type': row_type, 'label': row_text}
+            elif row_type == 'name':
+                return {'type': row_type, 'label': row_text}
+            elif row_type == 'termlist':
+                return {'type': row_type, 'label': 'List'}
+            elif row_type == 'operator':
+                def _operator_text() -> str:
+                    if row_text == ',':
+                        return "AND"
+                    elif row_text == ';':
+                        return "OR"
+                    elif row_text == ":-":
+                        return "IF"
+                    raise ValueError(f"Not Recognized: {row_text}")
+
+                return {'type': row_type, 'label': _operator_text()}
+
+            return {'type': row_type, 'label': row_type}
+
+        def _node_dict() -> dict:
+            d = {}
+
+            for _, row in self._df_ast.iterrows():
+                d[self._cleanse(row['UUID'])] = _label(row)
+
+            return d
+
+        d_nodes = _node_dict()
+
+        for node_id in d_nodes:
             graph = self._node_generator.process(graph,
-                                                 a_node_name=schema,
-                                                 a_node_type="schema",
+                                                 a_node_id=node_id,
+                                                 a_node_name=d_nodes[node_id]['label'],
+                                                 a_node_type=d_nodes[node_id]['type'],
                                                  is_primary=True,
                                                  is_variant=False)
-
-        # for _, row in self._df_ast.iterrows():
-        #     graph = self._node_generator.process(graph,
-        #                                          a_node_name=row["ExplicitTag"],
-        #                                          a_node_type="tag",
-        #                                          is_primary=True,
-        #                                          is_variant=False)
-        #
-        #     graph = self._node_generator.process(graph,
-        #                                          a_node_name=row["ImplicitTag"],
-        #                                          a_node_type="tag",
-        #                                          is_primary=False,
-        #                                          is_variant=row["Relationship"] == "Variant")
 
     def _add_edges(self,
                    graph: Digraph) -> None:
         for _, row in self._df_ast.iterrows():
-            graph = self._edge_generator.process(graph,
-                                                 self._cleanse_uuid(row["UUID"]),
-                                                 "type-of",
-                                                 self._cleanse_uuid(row["Parent"]))
 
-            # graph = self._edge_generator.process(graph,
-            #                                      row["ImplicitTag"],
-            #                                      "type-of",
-            #                                      row["ImplicitSchema"])
-            #
-            # graph = self._edge_generator.process(graph,
-            #                                      row["ExplicitTag"],
-            #                                      row["Relationship"],
-            #                                      row["ImplicitTag"])
+            if not row['Parent']:
+                continue
+            if not row['UUID']:
+                raise ValueError("Missing Expected UUID")
+
+            graph = self._edge_generator.process(graph,
+                                                 self._cleanse(row["Parent"]),
+                                                 "type-of",
+                                                 self._cleanse(row["UUID"]))
 
     def process(self,
                 file_name: str,
-                engine: str = "fdp",
+                engine: str,
                 file_extension: str = "png") -> Digraph:
         graph = Digraph(engine=engine,
                         comment='Schema',
@@ -114,7 +134,9 @@ class GenerateDotGraph(object):
         self._add_nodes(graph)
         self._add_edges(graph)
 
+        graph.save("graph3.d", os.environ["PROJECT_BASE"])
+
         graph.render(os.path.join(os.environ["PROJECT_BASE"],
-                                  "resources/output/graph.png"))
+                                  "resources/output/graph3"))
 
         return graph

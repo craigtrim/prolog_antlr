@@ -49,6 +49,7 @@ class ParsePrologAPI(object):
 
 
 def main():
+
     source_code = """
         parent("Bill", "John").
         parent("Pam", "Bill").
