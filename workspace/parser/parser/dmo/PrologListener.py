@@ -3,7 +3,7 @@ from antlr4 import *
 if __name__ is not None and "." in __name__:
     from .PrologParser import PrologParser
 else:
-    from PrologParser import PrologParser
+    from workspace.parser import PrologParser
 
 # This class defines a complete listener for a parse tree produced by PrologParser.
 class PrologListener(ParseTreeListener):

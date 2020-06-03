@@ -1,6 +1,4 @@
-# Helps environment.sh set PYTHONPATH
+work# Helps environment.sh set PYTHONPATH
 
-/workspace/prolog/
-
-# Last package needs to have a line feed,
-# so keep this comment to close the line
+/workspace/parser
+/workspace/web

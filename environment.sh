@@ -4,14 +4,6 @@
 THIS_SCRIPT=${BASH_SOURCE[0]:-${(%):-%x}}
 export PROJECT_BASE="$(cd "$(dirname "${THIS_SCRIPT}")" && pwd)"
 
-# Have a shared file where we keep cloud credentials
-TEAM_SECRETS=${PROJECT_BASE}/environment.team.sh
-test -f "${TEAM_SECRETS}" && source ${TEAM_SECRETS}
-
-# Allow developers to tweak their environment
-PERSONAL_OVERRIDES=${PROJECT_BASE}/environment.local.sh
-test -f "${PERSONAL_OVERRIDES}" && source ${PERSONAL_OVERRIDES}
-
 # Make sure virtualenv is activated
 SITE_PACKAGES="$(python -c 'import site; print(site.getsitepackages()[0])')"
 if [[ ${SITE_PACKAGES} == *"antlr"* ]]; then
@@ -32,8 +24,10 @@ while read -r pkg; do
   [[ ${pkg:0:1} == '#' ]] && continue
 
   if ! echo "${PYTHONPATH}" | grep -Eq "$pkg"; then
-    PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}$GTS_BASE$pkg"
+    PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}$PROJECT_BASE$pkg"
   fi
 
 done <"${PROJECT_BASE}"/packages.txt
+
+echo $PYTHONPATH
 export PYTHONPATH
