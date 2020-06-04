@@ -23,10 +23,17 @@ def apply_model(source_lines: list):
 
     svcresult = None
 
-    # print('\n'.join([
-    #     "Web Method Completed",
-    #     f"\tTotal Time: {time.time() - start}",
-    #     f"\tInput: {pprint.pformat(source_lines, indent=4)}",
-    #     f"\tOutput: {pprint.pformat(svcresult.json, indent=4)}"]))
+    from parser.antlr.bp import ParsePrologAPI
 
-    return svcresult
+    parser_api = ParsePrologAPI(is_debug=False)
+    ast = parser_api.parse(source_lines=source_lines,
+                                         print_output=False)
+    ast = parser_api.post_process(ast, print_output=True)
+
+    print('\n'.join([
+        "Web Method Completed",
+        f"\tTotal Time: {time.time() - start}",
+        f"\tInput: {pprint.pformat(source_lines, indent=4)}",
+        f"\tOutput: {pprint.pformat(svcresult.json, indent=4)}"]))
+
+    return ast
