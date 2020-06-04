@@ -157,6 +157,7 @@ class PostProcessPrologAST(object):
                 _iter(item['results'])
                 if item['type'] == 'Binary':
                     item['type'] = _type(item)
+                    item['text'] = '|'.join([x['text'] for x in item['results']])
 
         _iter(ast)
         return ast

@@ -26,6 +26,28 @@ nodes: # node style
         text: '{Clause|P0}'
   - node:
       conditions:
+        type: conjunction
+      style:
+        shape: 'record'
+        fixedsize: 'false'
+        colorscheme: 'blues9'
+        color: '6'
+        text: 'AND|{P0}'
+        width: '0.50'
+        height: '0.50'
+  - node:
+      conditions:
+        type: conditional
+      style:
+        shape: 'diamond'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '6'
+        text: 'false'
+        width: '0.50'
+        height: '0.50'
+  - node:
+      conditions:
         type: compound
       style:
         shape: 'circle'
@@ -79,11 +101,11 @@ nodes: # node style
       conditions:
         type: string
       style:
-        shape: 'circle'
+        shape: 'doublecircle'
         fixedsize: 'true'
         colorscheme: 'blues9'
-        color: '1'
-        fontcolor: 'gray'
+        color: '6'
+        fontcolor: 'white'
         fontsize: '12'
   - node:
       conditions:
