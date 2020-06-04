@@ -7,7 +7,7 @@ from uuid import uuid1
 from antlr4.tree.Tree import ErrorNodeImpl
 from antlr4.tree.Tree import TerminalNodeImpl
 
-from parser.core.dmo import PrologParser
+from parser.antlr.dmo import PrologParser
 
 
 class BuildPrologAST(object):

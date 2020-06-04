@@ -2,8 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 
-from uuid import uuid1
-
 import pandas as pd
 from pandas import DataFrame
 
@@ -49,19 +47,7 @@ class GenerateASTDataFrame(object):
             self._iter(results, item, item['results'])
 
     def process(self) -> DataFrame:
-
-        # parent = {"uuid": str(uuid1()),
-        #           "Type": "Root",
-        #           "Text": "Root",
-        #           "Parent": None}
-        #
-        # results = [parent]
-        # results = [{
-        #     "UUID": str(uuid1()),
-        #     "Type": "Root",
-        #     "Text": "Root",
-        #     "Parent": None}]
-        results=[]
+        results = []
 
         self._iter(results, None, self._ast)
 

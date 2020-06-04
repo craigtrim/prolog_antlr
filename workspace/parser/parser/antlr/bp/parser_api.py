@@ -19,7 +19,7 @@ class ParsePrologAPI(object):
     def as_dataframe(self,
                      ast: list,
                      print_output: bool = False) -> DataFrame:
-        from parser.core.svc import GenerateASTDataFrame
+        from parser.ast.svc import GenerateASTDataFrame
 
         df = GenerateASTDataFrame(ast=ast,
                                   is_debug=self._is_debug).process()
@@ -34,7 +34,7 @@ class ParsePrologAPI(object):
     def post_process(self,
                      ast: list,
                      print_output: bool = False) -> list:
-        from parser.core.svc import PostProcessPrologAST
+        from parser.ast.svc import PostProcessPrologAST
 
         ast = PostProcessPrologAST(ast=ast,
                                    is_debug=self._is_debug).process()
@@ -49,8 +49,8 @@ class ParsePrologAPI(object):
     def parse(self,
               source_lines: list,
               print_output: bool = False) -> list:
-        from parser.core.svc import ParsePrologSource
-        from parser.core.svc import BuildPrologAST
+        from parser.antlr.svc import ParsePrologSource
+        from parser.antlr.svc import BuildPrologAST
 
         if type(source_lines) != list:
             raise ValueError("Expected List Input")

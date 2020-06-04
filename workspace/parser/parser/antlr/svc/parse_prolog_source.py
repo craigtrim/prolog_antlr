@@ -5,8 +5,8 @@
 from antlr4 import CommonTokenStream
 from antlr4 import InputStream
 
-from parser.core.dmo import PrologLexer
-from parser.core.dmo import PrologParser
+from parser.antlr.dmo import PrologLexer
+from parser.antlr.dmo import PrologParser
 
 
 class ParsePrologSource(object):
