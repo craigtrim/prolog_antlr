@@ -50,8 +50,11 @@ class BuildPrologAST(object):
             if ctx_name.lower() == 'variable':
                 return self._cached_uuid_by_name(ctx_name='variable',
                                                  ctx_text=ctx_text)
-            elif ctx_name.lower() == 'name':
+            if ctx_name.lower() == 'name':
                 return self._cached_uuid_by_name(ctx_name='name',
+                                                 ctx_text=ctx_text)
+            if ctx_name.lower() in ['atomic', 'string']:
+                return self._cached_uuid_by_name(ctx_name='string',
                                                  ctx_text=ctx_text)
 
             return str(uuid1())
@@ -146,4 +149,11 @@ class BuildPrologAST(object):
         return results
 
     def process(self) -> list:
-        return self._iter_tree(self._tree.children)
+        d = self._iter_tree(self._tree.children)
+
+        import pprint
+        print("************************************")
+        pprint.pprint(self._d_session_uuid, indent=4)
+        print("************************************")
+
+        return d

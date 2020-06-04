@@ -120,7 +120,7 @@ class GenerateDotGraph(object):
 
             graph = self._edge_generator.process(graph,
                                                  self._cleanse(row["Parent"]),
-                                                 "type-of",
+                                                 ".",
                                                  self._cleanse(row["UUID"]))
 
     def process(self,
