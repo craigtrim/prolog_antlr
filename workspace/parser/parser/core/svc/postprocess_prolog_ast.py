@@ -170,7 +170,4 @@ class PostProcessPrologAST(object):
         normalized = self._termlist_elimination_transformation(normalized)
         normalized = self._operator_renaming(normalized)
 
-        import pprint
-        pprint.pprint(normalized)
-
         return normalized

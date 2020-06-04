@@ -16,4 +16,4 @@ class GraphvizAPI(object):
         from grapher.core.svc import GenerateDotGraph
 
         GenerateDotGraph(df_ast=df_ast).process(file_name="output",
-                                                    engine="dot")
+                                                engine="dot")

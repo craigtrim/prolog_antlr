@@ -7,6 +7,8 @@ import json
 from pandas import DataFrame
 from tabulate import tabulate
 
+IS_DEBUG = True
+
 
 class ParsePrologAPI(object):
 
@@ -85,7 +87,6 @@ def main():
             father(Person, Father).
     """
     from grapher.core.bp import GraphvizAPI
-    IS_DEBUG = True
 
     source_lines = [x.strip() for x in source_code.split('\n')]
 
@@ -93,7 +94,7 @@ def main():
     grapher_api = GraphvizAPI(is_debug=IS_DEBUG)
 
     ast = parser_api.parse(source_lines, print_output=False)
-    ast = parser_api.post_process(ast, print_output=False)
+    ast = parser_api.post_process(ast, print_output=True)
     df_ast = parser_api.as_dataframe(ast, print_output=True)
 
     grapher_api.dot(df_ast)

@@ -60,7 +60,7 @@ class BuildPrologAST(object):
             return str(uuid1())
 
         return {
-            "uid": _uuid(),
+            "uuid": _uuid(),
             "type": ctx_name,
             "text": ctx_text,
             "results": self._iter_tree(children=children)}
@@ -150,10 +150,5 @@ class BuildPrologAST(object):
 
     def process(self) -> list:
         d = self._iter_tree(self._tree.children)
-
-        import pprint
-        print("************************************")
-        pprint.pprint(self._d_session_uuid, indent=4)
-        print("************************************")
 
         return d

@@ -2,6 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 
+from uuid import uuid1
+
 import pandas as pd
 from pandas import DataFrame
 
@@ -32,12 +34,14 @@ class GenerateASTDataFrame(object):
         for item in items:
 
             def _parent_uid() -> str or None:
-                if parent:
-                    return parent['uid']
+                if parent and 'uuid' in parent:
+                    return parent['uuid']
+                if parent and 'UUID' in parent:
+                    return parent['UUID']
                 return None
 
             results.append({
-                "UUID": item['uid'],
+                "UUID": item['uuid'],
                 "Type": item['type'],
                 "Text": item['text'],
                 "Parent": _parent_uid()})
@@ -45,12 +49,20 @@ class GenerateASTDataFrame(object):
             self._iter(results, item, item['results'])
 
     def process(self) -> DataFrame:
-        results = [{
-            "UUID": self._ast[0]['uid'],
-            "Type": "Root",
-            "Text": "Root",
-            "Parent": None}]
 
-        self._iter(results, self._ast[0], self._ast)
+        # parent = {"uuid": str(uuid1()),
+        #           "Type": "Root",
+        #           "Text": "Root",
+        #           "Parent": None}
+        #
+        # results = [parent]
+        # results = [{
+        #     "UUID": str(uuid1()),
+        #     "Type": "Root",
+        #     "Text": "Root",
+        #     "Parent": None}]
+        results=[]
+
+        self._iter(results, None, self._ast)
 
         return pd.DataFrame(results)
