@@ -29,6 +29,14 @@ class OperatorRenaming(object):
                 return 'Conjunction'
             if item['text'].lower() == 'if':
                 return 'Conditional'
+            if item['text'].lower() == 'cfg':
+                return 'Grammar'
+            if item['text'].lower() == 'eq':
+                return 'Equals'
+            if item['text'].lower() == 'or':
+                return 'Or'
+            if item['text'].lower() == 'unk':
+                return 'Unknown'
             raise NotImplementedError(f"Unrecognized Operator Type: {item['text']}")
 
         def _iter(items: list):

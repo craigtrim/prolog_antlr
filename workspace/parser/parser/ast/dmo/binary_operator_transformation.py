@@ -45,6 +45,16 @@ class BinaryOperatorTransformation(object):
                 return "AND"
             if operator['text'] == ':-':
                 return "IF"
+            if operator['text'] == '-->':
+                return "CFG"
+            if operator['text'] == '==':
+                return "EQ"
+            if operator['text'] == ';':
+                return "OR"
+            if operator['text'] == '->':
+                return "UNK"
+            if operator['text'] == '/':
+                return "UNK"
             raise NotImplementedError(f"Operator Text: {operator['text']}")
 
         def _results(items: list) -> list:

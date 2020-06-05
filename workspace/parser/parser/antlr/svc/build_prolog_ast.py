@@ -113,6 +113,30 @@ class BuildPrologAST(object):
                 ctx: PrologParser.Quoted_stringContext) -> dict:
         return self._to_dict(ctx.getText(), "String", ctx.children)
 
+    def _term_context(self,
+                      ctx: PrologParser.List_termContext) -> dict:
+        return self._to_dict(ctx.getText(), "Termlist", ctx.children)
+
+    def _cut_context(self,
+                     ctx: PrologParser.CutContext) -> dict:
+        return self._to_dict(ctx.getText(), "Cut", ctx.children)
+
+    def _braced_term_context(self,
+                             ctx: PrologParser.Braced_termContext) -> dict:
+        return self._to_dict(ctx.getText(), "BracedTerm", ctx.children)
+
+    def _directive_context(self,
+                           ctx: PrologParser.DirectiveContext) -> dict:
+        return self._to_dict(ctx.getText(), "Directive", ctx.children)
+
+    def _unary_operator_context(self,
+                                ctx: PrologParser.Unary_operatorContext) -> dict:
+        return self._to_dict(ctx.getText(), "Unary", ctx.children)
+
+    def _integer_context(self,
+                         ctx: PrologParser.Integer_termContext) -> dict:
+        return self._to_dict(ctx.getText(), "Integer", ctx.children)
+
     def _iter_tree(self,
                    children: list) -> list:
         results = []
@@ -139,6 +163,19 @@ class BuildPrologAST(object):
                 results.append(self._atom_ctx(child))
             elif type(child) == PrologParser.GraphicContext:
                 results.append(self._graphic_ctx(child))
+            elif type(child) == PrologParser.List_termContext:
+                results.append(self._term_context(child))
+            elif type(child) == PrologParser.CutContext:
+                results.append(self._cut_context(child))
+            elif type(child) == PrologParser.Braced_termContext:
+                results.append(self._braced_term_context(child))
+            elif type(child) == PrologParser.DirectiveContext:
+                results.append(self._directive_context(child))
+            elif type(child) == PrologParser.Unary_operatorContext:
+                results.append(self._unary_operator_context(child))
+            elif type(child) == PrologParser.Integer_termContext \
+                    or type(child) == PrologParser.IntegerContext:
+                results.append(self._integer_context(child))
             elif type(child) == ErrorNodeImpl:
                 results.append(self._error_node(child))
             elif type(child) == TerminalNodeImpl:
