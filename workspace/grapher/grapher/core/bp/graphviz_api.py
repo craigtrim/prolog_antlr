@@ -11,9 +11,34 @@ class GraphvizAPI(object):
                  is_debug: bool = False):
         self._is_debug = is_debug
 
-    def dot(self,
-            df_ast: DataFrame):
-        from grapher.core.svc import GenerateDotGraph
+    def graph_v1(self,
+                 df_ast: DataFrame):
+        """
+        Purpose:
+            Generates a DOT graph, somewhat summarized, but generally faithful to the AST
+        Reference (sample visual):
+            https://github.com/craigtrim/prolog_antlr/issues/5#issuecomment-638597971
+        """
+        from grapher.core.svc import GenerateGraphV1
 
-        GenerateDotGraph(df_ast=df_ast).process(file_name="output",
-                                                engine="dot")
+        gen = GenerateGraphV1(df_ast=df_ast,
+                              is_debug=self._is_debug)
+
+        gen.process(file_name="output",
+                    engine="dot")
+
+    def graph_v2(self,
+                 df_ast: DataFrame):
+        """
+        Purpose:
+
+        Reference (sample visual):
+            https://github.com/craigtrim/prolog_antlr/issues/9#issuecomment-639106295
+        """
+        from grapher.core.svc import GenerateGraphV2
+
+        gen = GenerateGraphV2(df_ast=df_ast,
+                              is_debug=self._is_debug)
+
+        gen.process(file_name="output",
+                    engine="dot")

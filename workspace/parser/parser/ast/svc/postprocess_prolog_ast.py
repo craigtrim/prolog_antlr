@@ -22,11 +22,13 @@ class PostProcessPrologAST(object):
         normalized = self._ast
 
         from parser.ast.dmo import AtomicStringTransformation
+        from parser.ast.dmo import AtomicEntityTransformation
         from parser.ast.dmo import OperatorRenaming
         from parser.ast.dmo import TermListRemovalTransformation
         from parser.ast.dmo import BinaryOperatorTransformation
 
         normalized = AtomicStringTransformation(normalized).process()
+        normalized = AtomicEntityTransformation(normalized).process()
         normalized = BinaryOperatorTransformation(normalized).process()
         normalized = TermListRemovalTransformation(normalized).process()
         normalized = OperatorRenaming(normalized).process()

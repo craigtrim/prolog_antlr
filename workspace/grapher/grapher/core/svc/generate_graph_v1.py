@@ -9,9 +9,14 @@ from pandas import DataFrame
 from pandas import Series
 
 
-class GenerateDotGraph(object):
-    """ Given a Pandas Dataframe as input
-        Generate an AST as a list for output """
+class GenerateGraphV1(object):
+    """ Generates a styled DOT graph (top-down) that is generally faithful to the AST
+        some AST summarization does occur, and element styling is applied.
+
+        This was the first visual graph generated, and may have limited practical utility.
+
+    Reference
+        https://github.com/craigtrim/prolog_antlr/issues/5#issuecomment-638597971"""
 
     def __init__(self,
                  df_ast: DataFrame,
@@ -138,9 +143,9 @@ class GenerateDotGraph(object):
         self._add_nodes(graph)
         self._add_edges(graph)
 
-        graph.save("graph3.d", os.environ["PROJECT_BASE"])
+        graph.save("graph_v1.d", os.environ["PROJECT_BASE"])
 
         graph.render(os.path.join(os.environ["PROJECT_BASE"],
-                                  "resources/output/graph3"))
+                                  "resources/output/graph_v1"))
 
         return graph
