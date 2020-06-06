@@ -86,8 +86,18 @@ class GenerateGraphV2(object):
                 print(tabulate(df_conjunctions, headers='keys', tablefmt='psql'))
                 raise NotImplementedError("Unexpected Condition")
 
+            results = []
             for _, conjunction_row in df_conjunctions.iterrows():
-                conjunction_row
+
+                df_entities = self._children_by_type(conjunction_row, 'Entity')
+                for _, entity_row in df_entities.iterrows():
+                    results.append({"text": entity_row['Text'], "type": 'Entity'})
+
+                df_strings = self._children_by_type(conjunction_row, 'String')
+                for _, string_row in df_strings.iterrows():
+                    results.append({"text": string_row['Text'], "type": 'String'})
+
+                print (">>>>> ", results)
 
             # idx = np.where((self._df_ast['Parent']==row['UUID']) & (self._df_ast['Type'] == 'Name'))
             # predicates = self._df_ast[self._df_ast['Parent'] == row['UUID']]
