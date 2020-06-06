@@ -64,60 +64,89 @@ class GenerateGraphV2(object):
         return self._df_ast[(self._df_ast['Parent'] == row['UUID']) &
                             (self._df_ast['Type'] == type_name)]
 
+    def _extract_triple(self,
+                        row: Series) -> list:
+        """
+        Purpose:
+            Given a 'Compound' row, extract a Triple from the DataFrame
+        Sample Input:
+            ancestor(Z,Y)
+        Sample Output (psudeo-code):
+            [   {text: Z, type: Variable, predicate: ancestor},
+                {text: Y, type: Variable, predicate: ancestor} ]
+        Reference:
+            https://github.com/craigtrim/prolog_antlr/issues/9#issuecomment-640114990
+        """
+        results = []
+
+        df_names = self._children_by_type(row, 'Name')
+        if len(df_names) != 1:
+            print(tabulate(df_names, headers='keys', tablefmt='psql'))
+            raise NotImplementedError("Unexpected Condition")
+
+        predicate = df_names['Text'].unique()[0]
+
+        df_conjunctions = self._children_by_type(row, 'Conjunction')
+        if len(df_conjunctions) == 0:
+            print(tabulate(df_conjunctions, headers='keys', tablefmt='psql'))
+            raise NotImplementedError("Unexpected Condition")
+
+        for _, conjunction_row in df_conjunctions.iterrows():
+
+            df_entities = self._children_by_type(conjunction_row, 'Entity')
+            for _, entity_row in df_entities.iterrows():
+                results.append({"Text": entity_row['Text'],
+                                "Type": 'Entity',
+                                "Predicate": predicate,
+                                "UUID": entity_row['UUID']})
+
+            df_strings = self._children_by_type(conjunction_row, 'String')
+            for _, string_row in df_strings.iterrows():
+                results.append({"Text": string_row['Text'],
+                                "Type": 'String',
+                                "Predicate": predicate,
+                                "UUID": string_row['UUID']})
+
+            df_variables = self._children_by_type(conjunction_row, 'Variable')
+            for _, variable_row in df_variables.iterrows():
+                results.append({"Text": variable_row['Text'],
+                                "Type": 'Variable',
+                                "Predicate": predicate,
+                                "UUID": variable_row['UUID']})
+
+        return results
+
     def _add_nodes(self,
-                   graph: Digraph) -> None:
+                   graph: Digraph,
+                   triples: list) -> None:
         """
         :param graph:
         """
 
-        df_compounds = self._df_ast[self._df_ast['Type'] == 'Compound']
-
-        for _, row in df_compounds.iterrows():
-
-            df_names = self._children_by_type(row, 'Name')
-            if len(df_names) != 1:
-                print(tabulate(df_names, headers='keys', tablefmt='psql'))
-                raise NotImplementedError("Unexpected Condition")
-
-            predicate = df_names['Text'].unique()[0]
-
-            df_conjunctions = self._children_by_type(row, 'Conjunction')
-            if len(df_conjunctions) == 0:
-                print(tabulate(df_conjunctions, headers='keys', tablefmt='psql'))
-                raise NotImplementedError("Unexpected Condition")
-
-            results = []
-            for _, conjunction_row in df_conjunctions.iterrows():
-
-                df_entities = self._children_by_type(conjunction_row, 'Entity')
-                for _, entity_row in df_entities.iterrows():
-                    results.append({"text": entity_row['Text'], "type": 'Entity'})
-
-                df_strings = self._children_by_type(conjunction_row, 'String')
-                for _, string_row in df_strings.iterrows():
-                    results.append({"text": string_row['Text'], "type": 'String'})
-
-                print (">>>>> ", results)
-
-            # idx = np.where((self._df_ast['Parent']==row['UUID']) & (self._df_ast['Type'] == 'Name'))
-            # predicates = self._df_ast[self._df_ast['Parent'] == row['UUID']]
-            # print (type(df_2), len(df_2), df_2)
-            # print(compound, " --> ", predicates)
+        for triple in triples:
+            for d_node in triple:
+                graph = self._node_generator.process(
+                    graph=graph,
+                    a_node_id=self._cleanse(d_node['UUID']),
+                    a_node={"label": d_node['Text'],
+                            "text": d_node['Text'],
+                            "type": d_node['Type']})
 
     def _add_edges(self,
-                   graph: Digraph) -> None:
-        # for _, row in self._df_ast.iterrows():
-        #
-        #     if not row['Parent']:
-        #         continue
-        #     if not row['UUID']:
-        #         raise ValueError("Missing Expected UUID")
-        #
-        #     graph = self._edge_generator.process(graph,
-        #                                          self._cleanse(row["Parent"]),
-        #                                          ".",
-        #                                          self._cleanse(row["UUID"]))
-        pass
+                   graph: Digraph,
+                   triples: list) -> None:
+
+        for triple in triples:
+            if len(triple) != 2:
+                raise NotImplementedError("Unhandled Triple Style")
+
+            subj = triple[0]
+            obj = triple[1]
+
+            graph = self._edge_generator.process(graph,
+                                                 self._cleanse(subj["UUID"]),
+                                                 subj["Predicate"],
+                                                 self._cleanse(obj["UUID"]))
 
     def process(self,
                 file_name: str,
@@ -131,8 +160,16 @@ class GenerateGraphV2(object):
         graph.attr('node',
                    **self._node_style_matcher.default_node_style())
 
-        self._add_nodes(graph)
-        self._add_edges(graph)
+        df_compounds = self._df_ast[self._df_ast['Type'] == 'Compound']
+        triples = []
+        for _, row in df_compounds.iterrows():
+            triples.append(self._extract_triple(row))
+
+        # import json
+        # print(json.dumps(triples))
+
+        self._add_nodes(graph, triples)
+        self._add_edges(graph, triples)
 
         graph.save("graph_v2.d", os.environ["PROJECT_BASE"])
 
