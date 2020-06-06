@@ -20,7 +20,7 @@ class GenerateGraphV1(object):
 
     def __init__(self,
                  df_ast: DataFrame,
-                 graph_style: str = "prolog",
+                 graph_style: str = "gv1",
                  is_debug: bool = True):
         """
         Created:

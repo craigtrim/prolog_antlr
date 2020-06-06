@@ -22,7 +22,7 @@ class DigraphTextCleanser(object):
         :param graph_style:
             a graph style defined in a graph stylesheet
             e.g.:
-            -   resources/config/graph/graphviz_prolog_graph.yml
+            -   resources/config/graph/graphviz_gv1_graph.yml
             -   resources/config/graph/graphviz_big_graph.yml
         :param is_debug:
             True     increase log output at DEBUG level

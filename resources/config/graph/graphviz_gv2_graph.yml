@@ -1,0 +1,178 @@
+### ******************************************************************************************
+###                                        WARNING
+###                             all style values must be strings
+###
+### References:
+###   1. Graphviz Colors
+###      https://www.graphviz.org/doc/info/colors.html
+### ******************************************************************************************
+
+graph:
+  split_text: True
+
+nodes: # node style
+  - node:
+      conditions:
+        type: variable
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+  - node:
+      conditions:
+        type: binary
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+  - node:
+      conditions:
+        type: string
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+  - node:
+      conditions:
+        type: name
+      style:
+        shape: 'doublecircle'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+
+  - node:
+      conditions:
+        type: clause
+      style:
+        shape: 'record'
+        style: 'rounded'
+        fontcolor: 'black'
+        fontsize: '8'
+        fillcolor: 'yellow'
+        text: '{Clause|P0}'
+  - node:
+      conditions:
+        type: conjunction
+      style:
+        shape: 'record'
+        fixedsize: 'false'
+        colorscheme: 'blues9'
+        color: '6'
+        text: 'AND|{P0}'
+        width: '0.50'
+        height: '0.50'
+  - node:
+      conditions:
+        type: conditional
+      style:
+        shape: 'plaintext'
+        text: 'IF'
+  - node:
+      conditions:
+        type: compound
+      style:
+        shape: 'ellipse'
+        colorscheme: 'blues9'
+        color: '6'
+        width: '0.25'
+        height: '0.25'
+        text: 'compound'
+  - node:
+      conditions:
+        type: record
+      style:
+        shape: 'terminator'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '4'
+        fontcolor: 'black'
+        fontsize: '10'
+  - node:
+      conditions:
+        type: atomic
+      style:
+        shape: 'point'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '4'
+        fontcolor: 'black'
+        fontsize: '6'
+  - node:
+      conditions:
+        type: operator
+      style:
+        shape: 'diamond'
+        fixedsize: 'true'
+        colorscheme: 'blues9'
+        color: '8'
+        fontcolor: 'white'
+        fontsize: '8'
+  - node: # default style
+      style:
+#        size: '800,800'
+#        shape: 'oval'
+#        color: 'lightblue2'
+#        style: 'filled'
+        fontsize: '8'
+
+edges: # edge style
+#  - edge:
+#      predicate: type-of
+#      display_label: False
+#      style:
+#        colorscheme: 'bupu9'
+#        color: '3'
+#        arrowhead: 'vee'
+#        style: 'dotted'
+#        arrowsize: '0.5'
+#  - edge:
+#      predicate: variant
+#      display_label: False
+#      style:
+#        colorscheme: 'bupu9'
+#        color: '4'
+#        arrowhead: 'vee'
+#        style: 'solid'
+#        arrowsize: '1.0'
+#        fontsize: '8'
+#  - edge:
+#      predicate: implies
+#      display_label: True
+#      style:
+#        colorscheme: 'bupu9'
+#        color: '5'
+#        arrowhead: normal
+#        fontsize: '8'
+#        weight: '1.5'
+#  - edge:
+#      predicate: similarto
+#      display_label: True
+#      style:
+#        colorscheme: 'bupu9'
+#        color: '6'
+#        arrowhead: normal
+#        fontsize: '8'
+#        weight: '3.0'
+#  - edge:
+#      predicate: requires
+#      display_label: True
+#      style:
+#        colorscheme: 'bupu9'
+#        color: '7'
+#        arrowhead: normal
+#        fontsize: '8'
+#        weight: '2.0'
+  - edge:
+      display_label: True
+      style:
+        color: 'black' # edge stroke color
+        fontcolor: 'white' # type face color
+        fontsize: '1' # point size of label
+        arrowhead: 'normal' # style of arrowhead at head end
+        arrowsize: '1.0' # scaling factor for arrowheads
+        style: 'filled' # bold, dotted filled
+

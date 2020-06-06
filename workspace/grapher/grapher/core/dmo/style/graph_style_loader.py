@@ -57,7 +57,7 @@ class GraphStyleLoader(object):
               some_style_name) -> dict:
         def _relative_path():
             if "prolog" in some_style_name.lower():
-                return "resources/config/graph/graphviz_prolog_graph.yml"
+                return "resources/config/graph/graphviz_gv1_graph.yml"
             if "big" in some_style_name.lower():
                 return "resources/config/graph/graphviz_big_graph.yml"
             if "sentiment" in some_style_name.lower():
