@@ -7,6 +7,7 @@ IS_DEBUG = True
 
 def main():
     source_code = """
+    label(skill, "Skill").
     label(analysis_skill, "Analysis Skill").
     label(business_analysis_skill, "Business Analysis Skill").
     

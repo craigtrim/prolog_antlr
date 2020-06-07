@@ -56,12 +56,10 @@ class GraphStyleLoader(object):
     def _load(self,
               some_style_name) -> dict:
         def _relative_path():
-            if "prolog" in some_style_name.lower():
+            if "gv1" in some_style_name.lower():
                 return "resources/config/graph/graphviz_gv1_graph.yml"
-            if "big" in some_style_name.lower():
-                return "resources/config/graph/graphviz_big_graph.yml"
-            if "sentiment" in some_style_name.lower():
-                return "resources/config/graph/graphviz_sentiment_graph.yml"
+            if "gv2" in some_style_name.lower():
+                return "resources/config/graph/graphviz_gv2_graph.yml"
             raise NotImplementedError(f"Unrecognized Style: {some_style_name}")
 
         return self._file_to_yaml_by_relative_path(
