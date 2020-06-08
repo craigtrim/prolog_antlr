@@ -17,8 +17,7 @@ class ParsePrologAPI(object):
         self._is_debug = is_debug
 
     def as_dataframe(self,
-                     ast: list,
-                     print_output: bool = False) -> DataFrame:
+                     ast: list) -> DataFrame:
         from parser.ast.svc import GenerateASTDataFrame
 
         df = GenerateASTDataFrame(ast=ast,
@@ -26,14 +25,13 @@ class ParsePrologAPI(object):
         if type(df) != DataFrame:
             raise ValueError("Expected DataFrame Ouput")
 
-        if print_output:
+        if self._is_debug:
             print(tabulate(df, tablefmt='psql', headers='keys'))
 
         return df
 
     def post_process(self,
-                     ast: list,
-                     print_output: bool = False) -> list:
+                     ast: list) -> list:
         from parser.ast.svc import PostProcessPrologAST
 
         ast = PostProcessPrologAST(ast=ast,
@@ -41,14 +39,13 @@ class ParsePrologAPI(object):
         if type(ast) != list:
             raise ValueError("Expected List Ouput")
 
-        if print_output:
+        if self._is_debug:
             print(json.dumps(ast))
 
         return ast
 
     def parse(self,
-              source_lines: list,
-              print_output: bool = False) -> list:
+              source_lines: list) -> list:
         from parser.antlr.svc import ParsePrologSource
         from parser.antlr.svc import BuildPrologAST
 
@@ -63,7 +60,7 @@ class ParsePrologAPI(object):
         if type(ast) != list:
             raise ValueError("Expected List Ouput")
 
-        if print_output:
+        if self._is_debug:
             print(json.dumps(ast))
 
         return ast

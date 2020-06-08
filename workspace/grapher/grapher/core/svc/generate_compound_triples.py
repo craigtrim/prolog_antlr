@@ -54,7 +54,9 @@ class GenerateCompoundTriples(object):
         df_compounds = self._df_ast[self._df_ast['Type'] == 'Compound']
         for _, row in df_compounds.iterrows():
             triples.append({
-                "Compound": row['Text'],
+                "Compound": {
+                    'UUID': row['UUID'],
+                    'Text': row['Text']},
                 "Triple": triple_extractor.process(row)})
 
         if self._is_debug:

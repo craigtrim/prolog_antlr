@@ -79,6 +79,7 @@ class GenerateGraphV2(object):
                 file_extension: str = "png") -> Digraph:
 
         from grapher.core.svc import GenerateCompoundTriples
+        from grapher.core.svc import GenerateFactClusters
         from grapher.core.svc import GenerateRuleClusters
 
         graph = Digraph(engine=engine,
@@ -98,49 +99,21 @@ class GenerateGraphV2(object):
                                              graph_style=self._graph_style)
         graph, triples = triple_gen.process()
 
+        fact_gen = GenerateFactClusters(graph=graph,
+                                        is_debug=self._is_debug,
+                                        graph_style=self._graph_style)
+
+        graph, compound_mapping, atomic_mapping = fact_gen.process(triples)
+
         rule_gen = GenerateRuleClusters(graph=graph,
                                         df_ast=self._df_ast,
                                         is_debug=self._is_debug,
                                         graph_style=self._graph_style)
 
-        graph, d_subgraph_mapping = rule_gen.process(triples)
+        rule_gen.process(atomic_mapping=atomic_mapping,
+                         compound_mapping=compound_mapping)
 
         # START LOGIC TO ADD CLUSTER-TO-CLUSTER CONNECTIONS
-
-        # # pattern: 'Clause/Conditional/(Compound, Compound)
-        # df_clause = self._df_ast[self._df_ast['Type'] == 'Clause']
-        #
-        # print (d_cluster_to_compound)
-
-        # for _, row_clause in df_clause.iterrows():
-        #     df_conditional = self._df_ast[(self._df_ast['Parent'] == row_clause['UUID']) &
-        #                                   (self._df_ast['Type'] == 'Conditional')]
-        #
-        #     for _, row_conditional in df_conditional.iterrows():
-        #         df_compounds = self._df_ast[(self._df_ast['Parent'] == row_conditional['UUID']) &
-        #                                     (self._df_ast['Type'] == 'Compound')]
-        #
-        #         if len(df_compounds) == 2:  # a known pattern
-        #             print("UUIDS HERE ----> ", df_compounds['UUID'].unique())
-        #             uuids = df_compounds['UUID'].unique()
-        #
-        #             if uuids[0] not in d_cluster_to_compound or uuids[1] not in d_cluster_to_compound:
-        #                 continue
-        #
-        #             s = d_cluster_to_compound[uuids[0]]
-        #             o = d_cluster_to_compound[uuids[1]]
-        #
-        #             graph.edge(tail_name=self._cleanse(uuids[0]),
-        #                        head_name=self._cleanse(uuids[1]),
-        #                        label="",
-        #                        ltail=s,
-        #                        lhead=o,
-        #                        style="dotted",
-        #                        colorscheme="greys9",
-        #                        color="4",
-        #                        arrowhead="none",
-        #                        fontsize="5",
-        #                        weight="2")
 
         # for k in self._d_node_ids:
         #     cartesian = self._cartesian(self._d_node_ids[k])

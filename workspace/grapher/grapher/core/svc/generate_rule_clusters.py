@@ -1,176 +1,18 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
-
-from graphviz import Digraph
-from pandas import DataFrame
-
-
-class GenerateRuleClusters(object):
-    """ Generate Clusters with Prolog Facts and add edges between clusters (facts)
-            if clusters (facts) are used within rules
-
-     Reference:
-        https://github.com/craigtrim/prolog_antlr/issues/11
-    """
-
-    def __init__(self,
-                 graph: Digraph,
-                 df_ast: DataFrame,
-                 graph_style: str = "gv2",
-                 is_debug: bool = True):
-        """
-        Created:
-            8-June-2020
-            craig.trim@ibm.com
-            *   Refactored out of 'generate-graph-v2'
-                https://github.com/craigtrim/prolog_antlr/issues/10
-        """
-        from grapher.core.dmo import GraphStyleLoader
-        from grapher.core.dmo import DigraphNodeGenerator
-        from grapher.core.dmo import DigraphEdgeGenerator
-        from grapher.core.dto import UUIDTransform
-
-        self._graph = graph
-        self._df_ast = df_ast
-        self._is_debug = is_debug
-        self._uuid_transform = UUIDTransform()
-
-        self._style_loader = GraphStyleLoader(style_name=graph_style,
-                                              is_debug=self._is_debug)
-
-        self._node_generator = DigraphNodeGenerator(is_debug=self._is_debug,
-                                                    graph_style=self._style_loader.style())
-
-        self._edge_generator = DigraphEdgeGenerator(is_debug=self._is_debug,
-                                                    graph_style=self._style_loader.style())
-
-    def _add_nodes(self,
-                   graph: Digraph,
-                   triples: list,
-                   tag: str = None,
-                   suffix: str = None) -> None:
-        """
-        :param graph:
-        """
-
-        for triple in triples:
-            for d_node in triple["Triple"]:
-
-                def _type() -> str:
-                    if tag:
-                        return f"{d_node['Type']}_{tag}"
-                    return d_node['Type']
-
-                uuid = self._uuid_transform.cleanse(d_node['UUID'], suffix=suffix)
-                graph = self._node_generator.process(
-                    graph=graph,
-                    a_node_id=uuid,
-                    a_node={"label": d_node['Text'],
-                            "text": d_node['Text'],
-                            "type": _type()})
-
-    def _add_edges(self,
-                   graph: Digraph,
-                   triples: list,
-                   suffix: str = None) -> None:
-
-        for triple in triples:
-            print(">>>>LEN: ", len(triple['Triple']))
-
-            # if len(triple['Triple']) != 2:
-            #     raise NotImplementedError("Unhandled Triple Style")
-
-            subj = triple['Triple'][0]
-            obj = triple['Triple'][1]
-
-            graph = self._edge_generator.process(graph,
-                                                 self._uuid_transform.cleanse(subj["UUID"], suffix=suffix),
-                                                 subj["Predicate"],
-                                                 self._uuid_transform.cleanse(obj["UUID"], suffix=suffix))
-
-    def process(self,
-                triples: list):
-
-        predicate_set = set()
-        for triple in triples:
-            predicate_set.add(triple['Triple'][0]['Predicate'])
-
-        predicate_set = sorted(predicate_set)
-
-        def _color_scheme() -> str:
-            if len(predicate_set) <= 3:
-                return "orrd3"
-            if len(predicate_set) <= 4:
-                return "orrd4"
-            if len(predicate_set) <= 5:
-                return "orrd5"
-            if len(predicate_set) <= 6:
-                return "orrd6"
-            if len(predicate_set) <= 7:
-                return "orrd7"
-            if len(predicate_set) <= 8:
-                return "orrd8"
-            if len(predicate_set) <= 9:
-                return "orrd9"
-            raise NotImplementedError("Color Scheme Needs Attention")
-
-        def _color_int(a_triple: dict) -> str:
-            for i in range(0, len(predicate_set)):
-                if predicate_set[i] == a_triple['Triple'][0]['Predicate']:
-                    return str(i + 1)
-
-            raise NotImplementedError
-
-        color_scheme = _color_scheme()
-
-        d_subgraph_to_triple = {}  # map subgraphs to triples
-
-        ctr = 0
-        for triple in triples:
-            subgraph_name = f"Cluster{ctr}"
-            d_subgraph_to_triple[triple['Triple'][0]['UUID']] = subgraph_name
-
-            with self._graph.subgraph(name=subgraph_name) as c:
-                c.attr(label=triple['Compound'],
-                       colorscheme=color_scheme,
-                       color=_color_int(triple),
-                       fontsize='10',
-                       fontname='Helvetica')
-
-                self._add_nodes(c, [triple], suffix=subgraph_name, tag="cluster")
-
-                d_subgraph_to_triple[subgraph_name] = triple
-
-                for node in triple['Triple']:
-                    s = self._uuid_transform.cleanse(node['UUID'])
-                    o = self._uuid_transform.cleanse(node['UUID'], suffix="cluster")
-
-                    self._graph = self._edge_generator.process(self._graph,
-                                                               s,
-                                                               "",
-                                                               o)
-
-            ctr += 1
-
-        import pprint
-        pprint.pprint(d_subgraph_to_triple)
-
-
 # !/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
 
 from graphviz import Digraph
 from pandas import DataFrame
+from tabulate import tabulate
 
 
 class GenerateRuleClusters(object):
-    """ Generate Clusters with Prolog Facts and add edges between clusters (facts)
-            if clusters (facts) are used within rules
+    """ Generate Edges between Graphviz Clusters
+            based on Rule definitions
 
      Reference:
-        https://github.com/craigtrim/prolog_antlr/issues/11
+        https://github.com/craigtrim/prolog_antlr/issues/12
     """
 
     def __init__(self,
@@ -205,131 +47,153 @@ class GenerateRuleClusters(object):
         self._edge_generator = DigraphEdgeGenerator(is_debug=self._is_debug,
                                                     graph_style=self._style_loader.style())
 
-    def _add_nodes(self,
-                   graph: Digraph,
-                   triples: list,
-                   tag: str = None,
-                   suffix: str = None) -> None:
-        """
-        :param graph:
-        """
-
-        for triple in triples:
-            for d_node in triple["Triple"]:
-
-                def _type() -> str:
-                    if tag:
-                        return f"{d_node['Type']}_{tag}"
-                    return d_node['Type']
-
-                uuid = self._uuid_transform.cleanse(d_node['UUID'], suffix=suffix)
-                graph = self._node_generator.process(
-                    graph=graph,
-                    a_node_id=uuid,
-                    a_node={"label": d_node['Text'],
-                            "text": d_node['Text'],
-                            "type": _type()})
-
-    def _add_edges(self,
-                   graph: Digraph,
-                   triples: list,
-                   suffix: str = None) -> None:
-
-        for triple in triples:
-            print(">>>>LEN: ", len(triple['Triple']))
-
-            # if len(triple['Triple']) != 2:
-            #     raise NotImplementedError("Unhandled Triple Style")
-
-            subj = triple['Triple'][0]
-            obj = triple['Triple'][1]
-
-            graph = self._edge_generator.process(graph,
-                                                 self._uuid_transform.cleanse(subj["UUID"], suffix=suffix),
-                                                 subj["Predicate"],
-                                                 self._uuid_transform.cleanse(obj["UUID"], suffix=suffix))
-
-    @staticmethod
-    def _color_scheme(predicate_set: list) -> str:
-        if len(predicate_set) <= 3:
-            return "orrd3"
-        if len(predicate_set) <= 4:
-            return "orrd4"
-        if len(predicate_set) <= 5:
-            return "orrd5"
-        if len(predicate_set) <= 6:
-            return "orrd6"
-        if len(predicate_set) <= 7:
-            return "orrd7"
-        if len(predicate_set) <= 8:
-            return "orrd8"
-        if len(predicate_set) <= 9:
-            return "orrd9"
-        raise NotImplementedError("Color Scheme Needs Attention")
-
-    @staticmethod
-    def _color_int(predicate_set: list,
-                   a_triple: dict) -> str:
-        for i in range(0, len(predicate_set)):
-            if predicate_set[i] == a_triple['Triple'][0]['Predicate']:
-                return str(i + 1)
-
-        raise NotImplementedError
-
-    @staticmethod
-    def _list_predicates(triples: list):
-        """
-        Purpose:
-            Build a list of predicates
-        Reference:
-            https://github.com/craigtrim/prolog_antlr/issues/11#issuecomment-640869651
-        """
-        pset = set()
-        for triple in triples:
-            pset.add(triple['Triple'][0]['Predicate'])
-
-        return sorted(pset)
-
-    def _update_mapping(self,
-                        triple: dict,
-                        subgraph_name: str):
-        """
-        Purpose:
-            Map Prolog Facts to Graphviz Cluster Names
-        Reference:
-            https://github.com/craigtrim/prolog_antlr/issues/11#issuecomment-640867602
-        """
-        if triple['Compound'] not in self._subgraph_mapping:
-            self._subgraph_mapping[triple['Compound']] = []
-        self._subgraph_mapping[triple['Compound']].append(subgraph_name)
+    # @staticmethod
+    # def _cartesian(some_values: list) -> list:
+    #     """
+    #     Purpose:
+    #         Generate a Cartesian Product of a Series of Lists
+    #     Implementation:
+    #         1.  Given a Series of Lists
+    #             [ [44, 12, 8], [49], [47] ]
+    #         2.  Generate a Cartesian Product
+    #             [(44, 49, 47), (12, 49, 47), (8, 49, 47)]
+    #     Reference:
+    #         https://stackoverflow.com/questions/533905/get-the-cartesian-product-of-a-series-of-lists
+    #     :param some_values:
+    #         a list of avlues
+    #     :return:
+    #         a Cartesian Product of the input values
+    #     """
+    #     s = set()
+    #
+    #     for x in some_values:
+    #         for y in some_values:
+    #             if x != y:
+    #                 s.add(','.join(sorted({x, y})))
+    #
+    #     return sorted(s)
 
     def process(self,
-                triples: list) -> (Digraph, dict):
+                atomic_mapping: dict,
+                compound_mapping: dict) -> Digraph:
 
-        predicates = self._list_predicates(triples)
-        color_scheme = self._color_scheme(predicates)
+        def _first_node_by_cluster_name(a_cluster_name: str) -> str:
+            for k in atomic_mapping:
+                for v in atomic_mapping[k]:
+                    if v == a_cluster_name:
+                        return k
 
-        ctr = 0
-        for triple in triples:
-            subgraph_name = f"Cluster{ctr}"
-            self._update_mapping(triple, subgraph_name)
+        df_clause = self._df_ast[self._df_ast['Type'] == 'Clause']
 
-            with self._graph.subgraph(name=subgraph_name) as c:
-                c.attr(label=triple['Compound'],
-                       colorscheme=color_scheme,
-                       color=self._color_int(predicates, triple),
-                       fontsize='10',
-                       fontname='Helvetica')
+        for _, row_clause in df_clause.iterrows():
+            df_conditional = self._df_ast[(self._df_ast['Parent'] == row_clause['UUID']) &
+                                          (self._df_ast['Type'] == 'Conditional')]
 
-                self._add_nodes(c, [triple], suffix=subgraph_name, tag="cluster")
+            if len(df_conditional) == 0:
+                continue
+            elif len(df_conditional) > 1:
+                raise NotImplementedError(f"Unexpected Conditional (size={len(df_conditional)})")
 
-                # Connect Atomics (aka "Triples") to Compounds (aka "Facts")
-                for node in triple['Triple']:
-                    s = self._uuid_transform.cleanse(node['UUID'])
-                    o = self._uuid_transform.cleanse(node['UUID'], suffix=subgraph_name)
-                    self._graph = self._edge_generator.process(self._graph,
-                                                               s, "definition", o)
+            print('\n'.join([
+                f"Extracted Conditionals from Clause (total={len(df_conditional)}):",
+                tabulate(df_conditional, tablefmt='psql', headers='keys')]))
 
-            ctr += 1
+            for _, row_conditional in df_conditional.iterrows():
+                df_compounds = self._df_ast[(self._df_ast['Parent'] == row_conditional['UUID']) &
+                                            (self._df_ast['Type'] == 'Compound')]
 
-        return self._graph, self._subgraph_mapping
+                if len(df_compounds) == 2:  # a known pattern
+
+                    print('\n'.join([
+                        f"Extracted Compounds from Conditional "
+                        f"(total={len(df_compounds)}, "
+                        f"pattern=Double Compound):",
+                        tabulate(df_compounds, tablefmt='psql', headers='keys')]))
+
+                    uuids = df_compounds['UUID'].unique()
+
+                    cluster_1 = compound_mapping[uuids[0]][0]
+                    cluster_2 = compound_mapping[uuids[1]][0]
+
+                    head = self._uuid_transform.cleanse(uuids[0], cluster_1)
+                    tail = self._uuid_transform.cleanse(uuids[1], cluster_2)
+
+                    cluster_1_node = _first_node_by_cluster_name(cluster_1)
+                    cluster_2_node = _first_node_by_cluster_name(cluster_2)
+
+                    print('\n'.join([
+                        f"Head ({cluster_1}, {head}, {cluster_1_node})",
+                        f"Tail ({cluster_2}, {tail}, {cluster_2_node})"]))
+
+                    self._graph.edge(tail_name=cluster_1_node,
+                                     head_name=cluster_2_node,
+                                     label=row_clause['Text'],
+                                     ltail=cluster_1,
+                                     lhead=cluster_2,
+                                     style="normal",
+                                     colorscheme="greys9",
+                                     color="8",
+                                     arrowhead="normal",
+                                     fontsize="10",
+                                     weight="2")
+
+
+                elif len(df_compounds == 1):
+                    df_conjunction = self._df_ast[(self._df_ast['Parent'] == row_conditional['UUID']) &
+                                                  (self._df_ast['Type'] == 'Conjunction')]
+                    for _, temp in df_conjunction.iterrows():
+                        df_compounds_object = self._df_ast[(self._df_ast['Parent'] == temp['UUID']) &
+                                                           (self._df_ast['Type'] == 'Compound')]
+
+                        if len(df_compounds_object) != 2:
+                            raise NotImplementedError
+
+                        print('\n'.join([
+                            f"Extracted Compound and Conjunction from Conditional "
+                            f"pattern=Compound/Compound):",
+                            tabulate(df_compounds, tablefmt='psql', headers='keys'),
+                            tabulate(df_compounds_object, tablefmt='psql', headers='keys')]))
+
+                        s = df_compounds['UUID'].unique()[0]
+                        o1 = df_compounds_object['UUID'].unique()[0]
+                        o2 = df_compounds_object['UUID'].unique()[1]
+
+                        s_cluster = compound_mapping[s][0]
+                        o1_cluster = compound_mapping[o1][0]
+                        o2_cluster = compound_mapping[o2][0]
+
+                        s_node = _first_node_by_cluster_name(s_cluster)
+                        o1_node = _first_node_by_cluster_name(o1_cluster)
+                        o2_node = _first_node_by_cluster_name(o2_cluster)
+
+                        print('\n'.join([
+                            "Conjunction Pattern Analysis:",
+                            f"\tSubj ({s}, {s_cluster}, {s_node})",
+                            f"\tObj1 ({o1}, {o1_cluster}, {o1_node})",
+                            f"\tObj2 ({o2}, {o2_cluster}, {o2_node})"]))
+
+                        self._graph.edge(tail_name=s_node,
+                                         head_name=o1_node,
+                                         label=row_clause['Text'],
+                                         ltail=s_cluster,
+                                         lhead=o1_cluster,
+                                         style="normal",
+                                         colorscheme="greys9",
+                                         color="8",
+                                         arrowhead="normal",
+                                         fontsize="10",
+                                         weight="2")
+
+                        self._graph.edge(tail_name=s_node,
+                                         head_name=o2_node,
+                                         label=row_clause['Text'],
+                                         ltail=s_cluster,
+                                         lhead=o2_cluster,
+                                         style="normal",
+                                         colorscheme="greys9",
+                                         color="8",
+                                         arrowhead="normal",
+                                         fontsize="10",
+                                         weight="2")
+
+        return self._graph

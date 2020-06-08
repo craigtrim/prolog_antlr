@@ -131,7 +131,7 @@ edges: # edge style
         color: '1'
         arrowhead: none
         fontsize: '5'
-        weight: '5'
+        weight: '1'
   - edge:
       display_label: True
       style:
