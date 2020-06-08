@@ -43,7 +43,7 @@ class CompoundTripleExtractor(object):
         results = []
 
         df_names = self._children_by_type(row, 'Name')
-        if len(df_names) != 1:
+        if len(df_names['UUID'].unique()) != 1:
             print(tabulate(df_names, headers='keys', tablefmt='psql'))
             raise NotImplementedError("Unexpected Condition")
 

@@ -53,6 +53,18 @@ class BuildPrologAST(object):
             if ctx_name.lower() == 'name':
                 return self._cached_uuid_by_name(ctx_name='name',
                                                  ctx_text=ctx_text)
+            if ctx_name.lower() == 'clause':
+                return self._cached_uuid_by_name(ctx_name='clause',
+                                                 ctx_text=ctx_text)
+            if ctx_name.lower() == 'entity':
+                return self._cached_uuid_by_name(ctx_name='entity',
+                                                 ctx_text=ctx_text)
+            if ctx_name.lower() == 'conjunction':
+                return self._cached_uuid_by_name(ctx_name='conjunction',
+                                                 ctx_text=ctx_text)
+            if ctx_name.lower() == 'compound':
+                return self._cached_uuid_by_name(ctx_name='compound',
+                                                 ctx_text=ctx_text)
             if ctx_name.lower() in ['atomic', 'string']:
                 return self._cached_uuid_by_name(ctx_name='string',
                                                  ctx_text=ctx_text)

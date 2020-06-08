@@ -1,4 +1,5 @@
 from .nav.compound_triple_extractor import CompoundTripleExtractor
+from .nav.compound_triple_grapher import CompoundTripleGrapher
 from .style.digraph_edge_generator import DigraphEdgeGenerator
 from .style.digraph_node_generator import DigraphNodeGenerator
 from .style.digraph_text_cleanser import DigraphTextCleanser

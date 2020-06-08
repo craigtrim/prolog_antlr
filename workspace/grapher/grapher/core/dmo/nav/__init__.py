@@ -1,1 +1,2 @@
 from .compound_triple_extractor import CompoundTripleExtractor
+from .compound_triple_grapher import CompoundTripleGrapher
