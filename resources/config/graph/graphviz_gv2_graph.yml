@@ -128,10 +128,10 @@ edges: # edge style
       style:
         style: 'dotted'
         colorscheme: 'greys9'
-        color: '3'
+        color: '1'
         arrowhead: none
         fontsize: '5'
-        weight: '0.5'
+        weight: '5'
   - edge:
       display_label: True
       style:

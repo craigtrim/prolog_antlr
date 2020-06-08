@@ -1,2 +1,4 @@
+from .generate_compound_triples import GenerateCompoundTriples
 from .generate_graph_v1 import GenerateGraphV1
 from .generate_graph_v2 import GenerateGraphV2
+from .generate_rule_clusters import GenerateRuleClusters

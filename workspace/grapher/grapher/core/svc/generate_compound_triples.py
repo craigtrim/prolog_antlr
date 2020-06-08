@@ -9,10 +9,11 @@ from pandas import DataFrame
 
 
 class GenerateCompoundTriples(object):
-    """ Generate Compound Triples Only
+    """ Extract Triples from AST Compound Formations and add to the Graph
 
      Reference:
-        https://github.com/craigtrim/prolog_antlr/issues/10     """
+        https://github.com/craigtrim/prolog_antlr/issues/10
+    """
 
     def __init__(self,
                  graph: Digraph,
@@ -80,14 +81,9 @@ class GenerateCompoundTriples(object):
                                                        edge['predicate'],
                                                        edge['object'])
 
-    def process(self) -> Digraph:
-        """
-        Purpose:
-            Extract Triples from AST Compound Formations
-            and add to the Graph
-        Reference:
-            https://github.com/craigtrim/prolog_antlr/issues/9#issuecomment-640114990
-        """
-        self._add_triples(self._extract_triples())
+    def process(self) -> (Digraph, list):
+        triples = self._extract_triples()
 
-        return self._graph
+        self._add_triples(triples)
+
+        return self._graph, triples

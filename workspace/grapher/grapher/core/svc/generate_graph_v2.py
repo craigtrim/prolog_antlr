@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 
-import json
 import os
 
 from graphviz import Digraph
@@ -33,11 +32,11 @@ class GenerateGraphV2(object):
 
         self._df_ast = df_ast
         self._is_debug = is_debug
-        # self._d_node_ids = {}
+        self._graph_style = graph_style
         self._uuid_transform = UUIDTransform()
 
-        self._style_loader = GraphStyleLoader(style_name=graph_style,
-                                              is_debug=self._is_debug)
+        self._style_loader = GraphStyleLoader(is_debug=self._is_debug,
+                                              style_name=self._graph_style)
 
         self._node_style_matcher = NodeStyleMatcher(is_debug=self._is_debug,
                                                     graph_style=self._style_loader.style())
@@ -47,124 +46,6 @@ class GenerateGraphV2(object):
 
         self._edge_generator = DigraphEdgeGenerator(is_debug=self._is_debug,
                                                     graph_style=self._style_loader.style())
-
-    def _iter(self,
-              items: list):
-        pass
-
-    # def _cleanse(self,
-    #              a_uuid: str,
-    #              suffix: str = None) -> str:
-    #
-    #     giz_uuid = f"UUID_{a_uuid.replace('-', '_').upper()}"
-    #     if giz_uuid not in self._d_node_ids:
-    #         self._d_node_ids[giz_uuid] = []
-    #
-    #     if not suffix:
-    #         return giz_uuid
-    #
-    #     variant = f"{giz_uuid}_{suffix}"
-    #     if variant not in self._d_node_ids[giz_uuid]:
-    #         self._d_node_ids[giz_uuid].append(variant)
-    #
-    #     return variant
-
-    # def _add_nodes(self,
-    #                graph: Digraph,
-    #                triples: list,
-    #                tag: str = None,
-    #                suffix: str = None) -> None:
-    #     """
-    #     :param graph:
-    #     """
-    #
-    #     for triple in triples:
-    #         for d_node in triple["Triple"]:
-    #
-    #             def _type() -> str:
-    #                 if tag:
-    #                     return f"{d_node['Type']}_{tag}"
-    #                 return d_node['Type']
-    #
-    #             uuid = self._uuid_transform.cleanse(d_node['UUID'], suffix=suffix)
-    #             graph = self._node_generator.process(
-    #                 graph=graph,
-    #                 a_node_id=uuid,
-    #                 a_node={"label": d_node['Text'],
-    #                         "text": d_node['Text'],
-    #                         "type": _type()})
-    #
-    # def _add_edges(self,
-    #                graph: Digraph,
-    #                triples: list,
-    #                suffix: str = None) -> None:
-    #
-    #     for triple in triples:
-    #
-    #         unique_ids = set(x['UUID'] for x in triple['Triple'])
-    #         if len(unique_ids) != 2:
-    #             print('\n'.join([
-    #                 "Triple Style Not Recognized",
-    #                 pprint.pformat(triple['Triple'])]))
-    #             raise NotImplementedError("Unhandled Triple Style")
-    #
-    #         subj = triple['Triple'][0]
-    #         obj = triple['Triple'][1]
-    #
-    #         graph = self._edge_generator.process(graph,
-    #                                              self._uuid_transform.cleanse(subj["UUID"], suffix=suffix),
-    #                                              subj["Predicate"],
-    #                                              self._uuid_transform.cleanse(obj["UUID"], suffix=suffix))
-
-    def _compound_triples(self,
-                          graph: Digraph,
-                          dump_json: bool = False) -> Digraph:
-        """
-        Purpose:
-            Extract Triples from AST Compound Formations
-        Reference:
-            https://github.com/craigtrim/prolog_antlr/issues/9#issuecomment-640114990
-        """
-        from grapher.core.dmo import CompoundTripleExtractor
-        from grapher.core.dmo import CompoundTripleGrapher
-
-        def _extract() -> list:
-            triples = []
-            triple_extractor = CompoundTripleExtractor(df_ast=self._df_ast,
-                                                       is_debug=self._is_debug)
-
-            df_compounds = self._df_ast[self._df_ast['Type'] == 'Compound']
-            for _, row in df_compounds.iterrows():
-                triples.append({
-                    "Compound": row['Text'],
-                    "Triple": triple_extractor.process(row)})
-
-            if dump_json:
-                print(json.dumps(triples))
-
-            return triples
-
-        def _graph(g: Digraph,
-                   triples: list) -> Digraph:
-            triple_grapher = CompoundTripleGrapher(uuid_transform=self._uuid_transform,
-                                                   is_debug=self._is_debug)
-
-            d_nodes, edges = triple_grapher.process(compound_triples=triples)
-
-            for k in d_nodes:
-                g = self._node_generator.process(graph=g,
-                                                 a_node_id=k,
-                                                 a_node=d_nodes[k])
-
-            for edge in edges:
-                g = self._edge_generator.process(g,
-                                                 edge['subject'],
-                                                 edge['predicate'],
-                                                 edge['object'])
-
-            return g
-
-        return _graph(graph, _extract())
 
     @staticmethod
     def _cartesian(some_values: list) -> list:
@@ -197,6 +78,9 @@ class GenerateGraphV2(object):
                 engine: str,
                 file_extension: str = "png") -> Digraph:
 
+        from grapher.core.svc import GenerateCompoundTriples
+        from grapher.core.svc import GenerateRuleClusters
+
         graph = Digraph(engine=engine,
                         comment='Schema',
                         format=file_extension,
@@ -208,60 +92,18 @@ class GenerateGraphV2(object):
         graph.attr('graph',
                    compound='True')
 
-        self._compound_triples(graph=graph,
-                               dump_json=True)
+        triple_gen = GenerateCompoundTriples(graph=graph,
+                                             df_ast=self._df_ast,
+                                             is_debug=self._is_debug,
+                                             graph_style=self._graph_style)
+        graph, triples = triple_gen.process()
 
-        # self._add_nodes(graph, compound_triples)
-        # self._add_edges(graph, compound_triples)
+        rule_gen = GenerateRuleClusters(graph=graph,
+                                        df_ast=self._df_ast,
+                                        is_debug=self._is_debug,
+                                        graph_style=self._graph_style)
 
-        # predicate_set = set()
-        # for triple in triples:
-        #     predicate_set.add(triple['Triple'][0]['Predicate'])
-
-        # predicate_set = sorted(predicate_set)
-        #
-        # def _color_scheme() -> str:
-        #     if len(predicate_set) <= 3:
-        #         return "orrd3"
-        #     if len(predicate_set) <= 4:
-        #         return "orrd4"
-        #     if len(predicate_set) <= 5:
-        #         return "orrd5"
-        #     if len(predicate_set) <= 6:
-        #         return "orrd6"
-        #     if len(predicate_set) <= 7:
-        #         return "orrd7"
-        #     if len(predicate_set) <= 8:
-        #         return "orrd8"
-        #     if len(predicate_set) <= 9:
-        #         return "orrd9"
-        #     raise NotImplementedError("Color Scheme Needs Attention")
-        #
-        # def _color_int(a_triple: dict) -> str:
-        #     for i in range(0, len(predicate_set)):
-        #         if predicate_set[i] == a_triple['Triple'][0]['Predicate']:
-        #             return str(i + 1)
-        #
-        #     raise NotImplementedError
-
-        # color_scheme = _color_scheme()
-        #
-        # d_cluster_to_compound = {}
-        #
-        # ctr = 0
-        # for triple in triples:
-        #     subgraph_name = f"Cluster{ctr}"
-        #     d_cluster_to_compound[triple['Triple'][0]['UUID']] = subgraph_name
-        #
-        #     with graph.subgraph(name=subgraph_name) as c:
-        #         c.attr(label=triple['Compound'],
-        #                colorscheme=color_scheme,
-        #                color=_color_int(triple),
-        #                fontsize='10',
-        #                fontname='Helvetica')
-        #         self._add_nodes(c, [triple], suffix=subgraph_name, tag="cluster")
-        #         self._add_edges(c, [triple], suffix=subgraph_name)
-        #     ctr += 1
+        graph, d_subgraph_mapping = rule_gen.process(triples)
 
         # START LOGIC TO ADD CLUSTER-TO-CLUSTER CONNECTIONS
 
