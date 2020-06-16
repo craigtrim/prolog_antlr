@@ -1,0 +1,1 @@
+mortal(X) :- person(X).

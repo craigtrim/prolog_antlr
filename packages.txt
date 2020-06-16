@@ -1,5 +1,7 @@
 work# Helps environment.sh set PYTHONPATH
 
-/workspace/parser
-/workspace/grapher
-/workspace/web
+/workspace/plbase
+/workspace/plscripts
+/workspace/plparse
+/workspace/plgraph
+/workspace/plrest
