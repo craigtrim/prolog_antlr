@@ -12,7 +12,8 @@ class GraphvizAPI(object):
         self._is_debug = is_debug
 
     def graph_v1(self,
-                 df_ast: DataFrame):
+                 df_ast: DataFrame,
+                 file_name: str):
         """
         Purpose:
             Generates a DOT graph, somewhat summarized, but generally faithful to the AST
@@ -24,11 +25,12 @@ class GraphvizAPI(object):
         gen = GenerateGraphV1(df_ast=df_ast,
                               is_debug=self._is_debug)
 
-        gen.process(file_name="output",
+        gen.process(file_name=file_name,
                     engine="dot")
 
     def graph_v2(self,
-                 df_ast: DataFrame):
+                 df_ast: DataFrame,
+                 file_name: str):
         """
         Purpose:
 
@@ -40,5 +42,5 @@ class GraphvizAPI(object):
         gen = GenerateGraphV2(df_ast=df_ast,
                               is_debug=self._is_debug)
 
-        gen.process(file_name="output",
+        gen.process(file_name=file_name,
                     engine="dot")

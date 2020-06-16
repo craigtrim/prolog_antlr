@@ -83,6 +83,16 @@ nodes: # node style
         text: 'compound'
   - node:
       conditions:
+        type: entity
+      style:
+        shape: 'atomic'
+        colorscheme: 'blues9'
+        color: '6'
+        width: '0.10'
+        height: '0.10'
+        text: 'entity'
+  - node:
+      conditions:
         type: record
       style:
         shape: 'terminator'

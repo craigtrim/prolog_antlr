@@ -2,18 +2,30 @@
 # -*- coding: UTF-8 -*-
 
 
+import os
+
+from plbase import FileIO
+from plgraph import GraphvizAPI
+from plparse import ParsePrologAPI
+
 IS_DEBUG = True
 
 
-def main():
-    source_code = """
-    ancestor(X,Y):- 
-        parent(X,Y).   		/* someone is your ancestor if there are your parent */            
-"""
-    from plgraph.core.bp import GraphvizAPI
-    from plparse.antlr.bp import ParsePrologAPI
+def main(input_file):
+    """
+    Purpose:
 
-    source_lines = [x.strip() for x in source_code.split('\n')]
+    Reference:
+
+    Updated:
+        16-June-2020
+        craigtrim@gmail.com
+        *   renamed from 'generate_graph_v1_01'
+    """
+
+    source_lines = FileIO.file_to_lines(os.path.join(os.environ['PROJECT_BASE'],
+                                                     'resources/input/prolog',
+                                                     input_file))
 
     parser_api = ParsePrologAPI(is_debug=IS_DEBUG)
     grapher_api = GraphvizAPI(is_debug=IS_DEBUG)
@@ -22,8 +34,10 @@ def main():
     ast = parser_api.post_process(ast)
     df_ast = parser_api.as_dataframe(ast)
 
-    grapher_api.graph_v2(df_ast)
+    grapher_api.graph_v2(df_ast, file_name=input_file)
 
 
 if __name__ == '__main__':
-    main()
+    import plac
+
+    plac.call(main)

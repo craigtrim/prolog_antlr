@@ -149,8 +149,8 @@ class GenerateGraphV2(object):
 
         # now I want to add relationships between clusters
 
-        graph.save("graph_v2.d", os.environ["PROJECT_BASE"])
+        graph.save(f"{file_name}.d", os.environ["PROJECT_BASE"])
         graph.render(os.path.join(os.environ["PROJECT_BASE"],
-                                  "resources/output/graph_v2"))
+                                  f"resources/output/{file_name}"))
 
         return graph

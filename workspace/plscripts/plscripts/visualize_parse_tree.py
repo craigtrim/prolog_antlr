@@ -4,6 +4,10 @@
 
 import os
 
+from plbase import FileIO
+from plgraph import GraphvizAPI
+from plparse import ParsePrologAPI
+
 IS_DEBUG = True
 
 
@@ -20,10 +24,6 @@ def main(input_file):
         *   renamed from 'generate_graph_v1_01'
     """
 
-    from plgraph.core.bp import GraphvizAPI
-    from plparse.antlr.bp import ParsePrologAPI
-    from plbase.core.dmo import FileIO
-
     source_lines = FileIO.file_to_lines(os.path.join(os.environ['PROJECT_BASE'],
                                                      'resources/input/prolog',
                                                      input_file))
@@ -35,7 +35,7 @@ def main(input_file):
     ast = parser_api.post_process(ast)
     df_ast = parser_api.as_dataframe(ast)
 
-    grapher_api.graph_v1(df_ast)
+    grapher_api.graph_v1(df_ast, file_name=input_file)
 
 
 if __name__ == '__main__':

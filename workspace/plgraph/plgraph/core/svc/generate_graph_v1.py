@@ -146,6 +146,6 @@ class GenerateGraphV1(object):
         graph.save("graph_v1.d", os.environ["PROJECT_BASE"])
 
         graph.render(os.path.join(os.environ["PROJECT_BASE"],
-                                  "resources/output/graph_v1"))
+                                  f"resources/output/{file_name}"))
 
         return graph
