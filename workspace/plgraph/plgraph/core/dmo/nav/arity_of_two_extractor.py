@@ -6,16 +6,25 @@ from pandas import DataFrame
 from pandas import Series
 from tabulate import tabulate
 
+from plbase import BaseObject
 
-# from plbase import BaseObject
 
+class ArityOfTwoExtractor(BaseObject):
+    """ Given a Predicate with an arity of /2
+            extract both arguments in a 'Triple' format
 
-class CompoundTripleExtractor(object):
-    """
-    Purpose:
-        Given a 'Compound' row, extract a Triple from the DataFrame
-    Sample Input:
+    Sample Input (Prolog):
         ancestor(Z,Y)
+    Sample Input (DataFrame AST):
+        +-------------+----------------+--------------------------------------+
+        ...
+        | Compound    | ancestor(Z,Y)  | 5b93bbc4-b02b-11ea-b4b6-acde48001122 |
+        | Name        | ancestor       | 5b93bee4-b02b-11ea-b4b6-acde48001122 |
+        | Conjunction | Z|Y            | 5b93bee4-b02b-11ea-b4b6-acde48001122 |
+        | Variable    | Z              | 5b93c18c-b02b-11ea-b4b6-acde48001122 |
+        | Variable    | Y              | 5b93c18c-b02b-11ea-b4b6-acde48001122 |
+        ...
+        +-------------+----------------+--------------------------------------+
     Sample Output (psudeo-code):
         [   {text: Z, type: Variable, predicate: ancestor},
             {text: Y, type: Variable, predicate: ancestor} ]
@@ -32,7 +41,7 @@ class CompoundTripleExtractor(object):
             craig.trim@ibm.com
             *   refactored out of 'generate-graph-v2'
         """
-        # BaseObject.__init__(self, __name__)
+        BaseObject.__init__(self, __name__)
         self._df_ast = df_ast
         self._is_debug = is_debug
 
@@ -48,16 +57,20 @@ class CompoundTripleExtractor(object):
 
         df_names = self._children_by_type(row, 'Name')
         if len(df_names['UUID'].unique()) != 1:
-            print(tabulate(df_names, headers='keys', tablefmt='psql'))
+            self.logger.debug(tabulate(df_names, headers='keys', tablefmt='psql'))
             raise NotImplementedError("Unexpected Condition")
 
         predicate = df_names['Text'].unique()[0]
-        print('\n'.join([
+        self.logger.debug('\n'.join([
             f"Located Predicate: {predicate}"]))
 
         df_conjunctions = self._children_by_type(row, 'Conjunction')
+        self.logger.debug('\n'.join([
+            'Located Conjunction Types',
+            tabulate(df_conjunctions, headers='keys', tablefmt='psql')]))
+
         if len(df_conjunctions) == 0:
-            print(tabulate(df_conjunctions, headers='keys', tablefmt='psql'))
+            self.logger.debug(tabulate(df_conjunctions, headers='keys', tablefmt='psql'))
             raise NotImplementedError("Unexpected Condition")
 
         for _, conjunction_row in df_conjunctions.iterrows():

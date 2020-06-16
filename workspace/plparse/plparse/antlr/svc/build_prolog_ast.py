@@ -125,8 +125,8 @@ class BuildPrologAST(object):
                 ctx: PrologParser.Quoted_stringContext) -> dict:
         return self._to_dict(ctx.getText(), "String", ctx.children)
 
-    def _term_context(self,
-                      ctx: PrologParser.List_termContext) -> dict:
+    def _list_term_context(self,
+                           ctx: PrologParser.List_termContext) -> dict:
         return self._to_dict(ctx.getText(), "Termlist", ctx.children)
 
     def _cut_context(self,
@@ -148,6 +148,10 @@ class BuildPrologAST(object):
     def _empty_list_context(self,
                             ctx: PrologParser.Empty_listContext) -> dict:
         return self._to_dict(ctx.getText(), "EmptyList", ctx.children)
+
+    def _term_context(self,
+                      ctx: PrologParser.TermContext) -> dict:
+        return self._to_dict(ctx.getText(), "TermContext", ctx.children)
 
     def _integer_context(self,
                          ctx: PrologParser.Integer_termContext) -> dict:
@@ -180,7 +184,7 @@ class BuildPrologAST(object):
             elif type(child) == PrologParser.GraphicContext:
                 results.append(self._graphic_ctx(child))
             elif type(child) == PrologParser.List_termContext:
-                results.append(self._term_context(child))
+                results.append(self._list_term_context(child))
             elif type(child) == PrologParser.CutContext:
                 results.append(self._cut_context(child))
             elif type(child) == PrologParser.Braced_termContext:
@@ -191,6 +195,8 @@ class BuildPrologAST(object):
                 results.append(self._unary_operator_context(child))
             elif type(child) == PrologParser.Empty_listContext:
                 results.append(self._empty_list_context(child))
+            elif type(child) == PrologParser.TermContext:
+                results.append(self._term_context(child))
             elif type(child) == PrologParser.Integer_termContext \
                     or type(child) == PrologParser.IntegerContext:
                 results.append(self._integer_context(child))

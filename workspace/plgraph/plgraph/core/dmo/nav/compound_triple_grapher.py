@@ -2,9 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 
-import pprint
-
-
 class CompoundTripleGrapher(object):
     """ Generates Compound Triples for Graphviz """
 
@@ -15,6 +12,11 @@ class CompoundTripleGrapher(object):
             8-June-2020
             craig.trim@ibm.com
             *   refactored out of 'generate-graph-v2'
+        Updated:
+            16-June-2020
+            craig.trim@ibm.com
+            *   added multi-arity extraction
+                https://github.com/craigtrim/prolog_antlr/issues/14
         """
         from plgraph.core.dto import UUIDTransform
 
@@ -49,19 +51,21 @@ class CompoundTripleGrapher(object):
         for triple in triples:
 
             unique_ids = set(x['UUID'] for x in triple['Triple'])
-            if len(unique_ids) != 2:
-                print('\n'.join([
-                    "Triple Style Not Recognized",
-                    pprint.pformat(triple['Triple'])]))
-                raise NotImplementedError("Unhandled Triple Style")
 
-            subj = triple['Triple'][0]
-            obj = triple['Triple'][1]
+            if len(unique_ids) == 1:  # arity of /1
+                pass  # no edges exist
 
-            self._edges.append({
-                "subject": self._uuid_transform.cleanse(subj["UUID"], suffix=suffix),
-                "predicate": subj['Predicate'],
-                "object": self._uuid_transform.cleanse(obj["UUID"], suffix=suffix)})
+            elif len(unique_ids) == 2:  # arity of /2
+                subj = triple['Triple'][0]
+                obj = triple['Triple'][1]
+
+                self._edges.append({
+                    "subject": self._uuid_transform.cleanse(subj["UUID"], suffix=suffix),
+                    "predicate": subj['Predicate'],
+                    "object": self._uuid_transform.cleanse(obj["UUID"], suffix=suffix)})
+
+            else:
+                raise NotImplementedError("Unhandled Arity")
 
     def process(self,
                 compound_triples: list) -> (dict, list):

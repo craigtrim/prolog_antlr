@@ -1,2 +1,3 @@
-from .compound_triple_extractor import CompoundTripleExtractor
+from .arity_of_one_extractor import ArityOfOneExtractor
+from .arity_of_two_extractor import ArityOfTwoExtractor
 from .compound_triple_grapher import CompoundTripleGrapher

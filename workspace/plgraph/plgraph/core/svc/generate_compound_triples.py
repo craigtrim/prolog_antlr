@@ -6,6 +6,7 @@ import json
 
 from graphviz import Digraph
 from pandas import DataFrame
+from pandas import Series
 
 
 class GenerateCompoundTriples(object):
@@ -44,12 +45,19 @@ class GenerateCompoundTriples(object):
         self._edge_generator = DigraphEdgeGenerator(is_debug=self._is_debug,
                                                     graph_style=self._style_loader.style())
 
-    def _extract_triples(self) -> list:
-        from plgraph.core.dmo import CompoundTripleExtractor
+    def _extract(self) -> list:
+        from plgraph.core.dmo import ArityOfOneExtractor
+        from plgraph.core.dmo import ArityOfTwoExtractor
 
         triples = []
-        triple_extractor = CompoundTripleExtractor(df_ast=self._df_ast,
-                                                   is_debug=self._is_debug)
+
+        def _by_arity(a_row: Series):
+            try:
+                return ArityOfTwoExtractor(df_ast=self._df_ast,
+                                           is_debug=self._is_debug).process(a_row)
+            except NotImplementedError:
+                return ArityOfOneExtractor(df_ast=self._df_ast,
+                                           is_debug=self._is_debug).process(a_row)
 
         df_compounds = self._df_ast[self._df_ast['Type'] == 'Compound']
         for _, row in df_compounds.iterrows():
@@ -57,7 +65,7 @@ class GenerateCompoundTriples(object):
                 "Compound": {
                     'UUID': row['UUID'],
                     'Text': row['Text']},
-                "Triple": triple_extractor.process(row)})
+                "Triple": _by_arity(row)})
 
         if self._is_debug:
             print(json.dumps(triples))
@@ -84,7 +92,7 @@ class GenerateCompoundTriples(object):
                                                        edge['object'])
 
     def process(self) -> (Digraph, list):
-        triples = self._extract_triples()
+        triples = self._extract()
 
         self._add_triples(triples)
 

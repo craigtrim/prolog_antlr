@@ -1,4 +1,5 @@
-from .nav.compound_triple_extractor import CompoundTripleExtractor
+from .nav.arity_of_one_extractor import ArityOfOneExtractor
+from .nav.arity_of_two_extractor import ArityOfTwoExtractor
 from .nav.compound_triple_grapher import CompoundTripleGrapher
 from .style.digraph_edge_generator import DigraphEdgeGenerator
 from .style.digraph_node_generator import DigraphNodeGenerator
