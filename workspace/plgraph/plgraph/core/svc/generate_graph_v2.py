@@ -149,6 +149,8 @@ class GenerateGraphV2(object):
 
         # now I want to add relationships between clusters
 
+        if ".pl" in file_name:
+            file_name = file_name.split('.pl')[0].strip()
         graph.save(f"{file_name}.d", os.environ["PROJECT_BASE"])
         graph.render(os.path.join(os.environ["PROJECT_BASE"],
                                   f"resources/output/{file_name}"))
