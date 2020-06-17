@@ -102,7 +102,7 @@ class ArityOfOneExtractor(BaseObject):
                      "Predicate": predicate,
                      "UUID": uuid}]
 
-        text, uuid = self._extract_by_type(row, ['Entity', 'String'])
+        text, uuid = self._extract_by_type(row, ['Entity', 'String', 'Integer'])
         if text and uuid:  # TYPE-2; person(socrates)
             return [{"Text": text,
                      "Type": "String",
