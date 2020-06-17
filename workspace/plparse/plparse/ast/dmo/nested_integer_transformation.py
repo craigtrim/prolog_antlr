@@ -2,10 +2,10 @@
 # -*- coding: UTF-8 -*-
 
 
-class DoubleIntegerTransformation(object):
+class NestedIntegerTransformation(object):
     """
     Purpose:
-        1.  Find an Integer -> Integer pattern
+        1.  Find a nested (Integer -> Integer) pattern
         2.  Remove the Inner Integer
     Sample Input:
         | 14 | 85bcb0c8-b02f-11ea-bcdc-acde48001122 | Integer     | 72                      | 85bcaeca-b02f-11ea-bcdc-acde48001122 |
