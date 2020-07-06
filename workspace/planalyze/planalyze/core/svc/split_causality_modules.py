@@ -53,6 +53,8 @@ class SplitCausalityModules(BaseObject):
         d_modules = self._load_src()
         source_lines = d_modules['/home/craig/git/prolognlp/cl/misc/misc.pro']
 
+        # print (source_lines)
+
         for line in source_lines:
             
             temp = line.lower().strip()
