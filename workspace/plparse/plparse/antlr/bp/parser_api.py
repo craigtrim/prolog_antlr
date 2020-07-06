@@ -11,6 +11,7 @@ IS_DEBUG = True
 
 
 class ParsePrologAPI(object):
+    """ API for Prolog Parse Operations """
 
     def __init__(self,
                  is_debug: bool = False):
@@ -18,6 +19,11 @@ class ParsePrologAPI(object):
 
     def as_dataframe(self,
                      ast: list) -> DataFrame:
+        """
+
+        @param ast:
+        @return:
+        """
         from plparse.ast.svc import GenerateASTDataFrame
 
         df = GenerateASTDataFrame(ast=ast,
@@ -32,6 +38,11 @@ class ParsePrologAPI(object):
 
     def post_process(self,
                      ast: list) -> list:
+        """
+
+        @param ast:
+        @return:
+        """
         from plparse.ast.svc import PostProcessPrologAST
 
         ast = PostProcessPrologAST(ast=ast,
@@ -46,11 +57,20 @@ class ParsePrologAPI(object):
 
     def parse(self,
               source_lines: list) -> list:
+        """
+
+        @param source_lines:
+        @return:
+        """
+        from plparse.antlr.svc import PreprocessPrologSource
         from plparse.antlr.svc import ParsePrologSource
         from plparse.antlr.svc import BuildPrologAST
 
         if type(source_lines) != list:
             raise ValueError("Expected List Input")
+
+        source_lines = PreprocessPrologSource(source_lines=source_lines,
+                                              is_debug=self._is_debug).process()
 
         tree = ParsePrologSource(source_lines=source_lines,
                                  is_debug=self._is_debug).process()
@@ -60,7 +80,7 @@ class ParsePrologAPI(object):
         if type(ast) != list:
             raise ValueError("Expected List Ouput")
 
-        if self._is_debug:
-            print(json.dumps(ast))
+        # if self._is_debug:
+        #     print(json.dumps(ast))
 
         return ast

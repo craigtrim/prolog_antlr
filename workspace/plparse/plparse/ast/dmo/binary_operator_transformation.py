@@ -52,9 +52,21 @@ class BinaryOperatorTransformation(object):
             if operator['text'] == ';':
                 return "OR"
             if operator['text'] == '->':
-                return "UNK"
+                return "UNK"  # TODO
             if operator['text'] == '/':
-                return "UNK"
+                return "UNK"  # TODO
+            if operator['text'] == '=':
+                return "UNK"  # TODO
+            if operator['text'] == ':':
+                return "UNK"  # TODO
+            if operator['text'] == '>':
+                return "UNK"  # TODO
+            if operator['text'] == '-':
+                return "UNK"  # TODO
+            if operator['text'] == '+':
+                return "UNK"  # TODO
+            if operator['text'] == '<':
+                return "UNK"  # TODO
             raise NotImplementedError(f"Operator Text: {operator['text']}")
 
         def _results(items: list) -> list:

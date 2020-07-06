@@ -5,3 +5,4 @@ work# Helps environment.sh set PYTHONPATH
 /workspace/plparse
 /workspace/plgraph
 /workspace/plrest
+/workspace/planalyze

@@ -2,7 +2,10 @@
 # -*- coding: UTF-8 -*-
 
 
-class CompoundTripleGrapher(object):
+from plbase import BaseObject
+
+
+class CompoundTripleGrapher(BaseObject):
     """ Generates Compound Triples for Graphviz """
 
     def __init__(self,
@@ -18,6 +21,7 @@ class CompoundTripleGrapher(object):
             *   added multi-arity extraction
                 https://github.com/craigtrim/prolog_antlr/issues/14
         """
+        BaseObject.__init__(self, __name__)
         from plgraph.core.dto import UUIDTransform
 
         self._edges = []
@@ -65,7 +69,9 @@ class CompoundTripleGrapher(object):
                     "object": self._uuid_transform.cleanse(obj["UUID"], suffix=suffix)})
 
             else:
-                raise NotImplementedError("Unhandled Arity")
+                self.logger.warning(f"Unhandled Arity (total-triples={len(triples)})")
+                # raise NotImplementedError("Unhandled Arity")
+                continue
 
     def process(self,
                 compound_triples: list) -> (dict, list):

@@ -20,7 +20,7 @@ class FileIO(object):
     def absolute_path(file_name: str,
                       validate: bool = True):
 
-        path = os.path.join(os.environ["GTS_BASE"],
+        path = os.path.join(os.environ["PROJECT_BASE"],
                             "resources",
                             file_name)
 
@@ -116,7 +116,7 @@ class FileIO(object):
     @staticmethod
     def file_to_lines_by_relative_path(relative_file_path: str,
                                        use_sort: bool = False) -> list:
-        path = os.path.join(os.environ["GTS_BASE"],
+        path = os.path.join(os.environ["PROJECT_BASE"],
                             relative_file_path)
         return FileIO.file_to_lines(file_path=path,
                                     use_sort=use_sort)
@@ -164,7 +164,7 @@ class FileIO(object):
 
     @staticmethod
     def file_to_yaml_by_relative_path(relative_file_path: str) -> dict:
-        path = os.path.join(os.environ["GTS_BASE"],
+        path = os.path.join(os.environ["PROJECT_BASE"],
                             relative_file_path)
         return FileIO.file_to_yaml(path)
 

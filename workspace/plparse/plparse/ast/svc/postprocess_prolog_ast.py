@@ -19,6 +19,10 @@ class PostProcessPrologAST(object):
         self._is_debug = is_debug
 
     def process(self) -> list:
+        """
+
+        @return:
+        """
         normalized = self._ast
 
         from plparse.ast.dmo import AtomicStringTransformation
@@ -27,12 +31,14 @@ class PostProcessPrologAST(object):
         from plparse.ast.dmo import TermListRemovalTransformation
         from plparse.ast.dmo import BinaryOperatorTransformation
         from plparse.ast.dmo import NestedIntegerTransformation
+        from plparse.ast.dmo import NestedElementTransformation
 
         normalized = AtomicStringTransformation(normalized).process()
         normalized = AtomicEntityTransformation(normalized).process()
         normalized = BinaryOperatorTransformation(normalized).process()
         normalized = TermListRemovalTransformation(normalized).process()
         normalized = NestedIntegerTransformation(normalized).process()
+        normalized = NestedElementTransformation(normalized).process()
         normalized = OperatorRenaming(normalized).process()
 
         return normalized

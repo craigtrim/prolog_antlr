@@ -57,21 +57,23 @@ class ArityOfTwoExtractor(BaseObject):
 
         df_names = self._children_by_type(row, 'Name')
         if len(df_names['UUID'].unique()) != 1:
-            self.logger.debug(tabulate(df_names, headers='keys', tablefmt='psql'))
+            if self._is_debug:
+                self.logger.debug(tabulate(df_names, headers='keys', tablefmt='psql'))
             raise NotImplementedError("Unexpected Condition")
 
         predicate = df_names['Text'].unique()[0]
-        self.logger.debug('\n'.join([
-            f"Located Predicate: {predicate}"]))
+        if self._is_debug:
+            self.logger.debug('\n'.join([
+                f"Located Predicate: {predicate}"]))
 
         df_conjunctions = self._children_by_type(row, 'Conjunction')
-        self.logger.debug('\n'.join([
-            'Located Conjunction Types',
-            tabulate(df_conjunctions, headers='keys', tablefmt='psql')]))
+        if self._is_debug:
+            self.logger.debug('\n'.join([
+                'Located Conjunction Types',
+                tabulate(df_conjunctions, headers='keys', tablefmt='psql')]))
 
         if len(df_conjunctions) == 0:
-            self.logger.debug(tabulate(df_conjunctions, headers='keys', tablefmt='psql'))
-            raise NotImplementedError("Unexpected Condition")
+            raise NotImplementedError("Unexpected Conjunction Pattern (empty dataframe)")
 
         for _, conjunction_row in df_conjunctions.iterrows():
 

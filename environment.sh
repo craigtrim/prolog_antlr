@@ -17,6 +17,24 @@ else
   return
 fi
 
+# Expand the variable named by $1 into its value. Works in both {ba,z}sh
+# eg: a=HOME $(var_expand $a) == /home/me
+# https://unix.stackexchange.com/a/472069/91054
+var_expand() {
+  if [ -z "${1-}" ] || [ $# -ne 1 ]; then
+    printf 'var_expand: expected one argument\n' >&2;
+    return 1;
+  fi
+  eval printf '%s' "\"\${$1?}\""
+}
+
+# Generate a .env file with the vars that be have set here.
+# VS Code takes advantage of this file
+echo "# Automatically generated" >"${PROJECT_BASE}"/.env
+grep '^export' <"${THIS_SCRIPT}" | cut -d " " -f 2 | cut -d "=" -f 1 | sort | while read -r line; do
+  echo "${line}"=\"$(var_expand $line)\" >>"${PROJECT_BASE}"/.env
+done
+
 # Get our project folders in the pythonpath
 while read -r pkg; do
 

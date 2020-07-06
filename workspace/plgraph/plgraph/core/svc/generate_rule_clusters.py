@@ -112,6 +112,10 @@ class GenerateRuleClusters(object):
 
                     uuids = df_compounds['UUID'].unique()
 
+                    if not uuids[0] in compound_mapping \
+                            or not uuids[1] in compound_mapping:
+                        continue
+
                     cluster_1 = compound_mapping[uuids[0]][0]
                     cluster_2 = compound_mapping[uuids[1]][0]
 
@@ -137,8 +141,7 @@ class GenerateRuleClusters(object):
                                      fontsize="10",
                                      weight="2")
 
-
-                elif len(df_compounds == 1):
+                elif len(df_compounds) == 1:
                     df_conjunction = self._df_ast[(self._df_ast['Parent'] == row_conditional['UUID']) &
                                                   (self._df_ast['Type'] == 'Conjunction')]
                     for _, temp in df_conjunction.iterrows():
@@ -146,7 +149,8 @@ class GenerateRuleClusters(object):
                                                            (self._df_ast['Type'] == 'Compound')]
 
                         if len(df_compounds_object) != 2:
-                            raise NotImplementedError
+                            # raise NotImplementedError
+                            continue
 
                         print('\n'.join([
                             f"Extracted Compound and Conjunction from Conditional "

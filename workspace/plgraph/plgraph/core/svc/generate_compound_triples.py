@@ -54,18 +54,24 @@ class GenerateCompoundTriples(object):
         def _by_arity(a_row: Series):
             try:
                 return ArityOfTwoExtractor(df_ast=self._df_ast,
-                                           is_debug=self._is_debug).process(a_row)
+                                           is_debug=False).process(a_row)
             except NotImplementedError:
-                return ArityOfOneExtractor(df_ast=self._df_ast,
-                                           is_debug=self._is_debug).process(a_row)
+
+                try:
+                    return ArityOfOneExtractor(df_ast=self._df_ast,
+                                               is_debug=False).process(a_row)
+                except NotImplementedError:
+                    return []
 
         df_compounds = self._df_ast[self._df_ast['Type'] == 'Compound']
         for _, row in df_compounds.iterrows():
-            triples.append({
-                "Compound": {
-                    'UUID': row['UUID'],
-                    'Text': row['Text']},
-                "Triple": _by_arity(row)})
+            triple = _by_arity(row)
+            if triple and len(triple):
+                triples.append({
+                    "Compound": {
+                        'UUID': row['UUID'],
+                        'Text': row['Text']},
+                    "Triple": triple})
 
         if self._is_debug:
             print(json.dumps(triples))
@@ -92,6 +98,10 @@ class GenerateCompoundTriples(object):
                                                        edge['object'])
 
     def process(self) -> (Digraph, list):
+        """
+
+        @return:
+        """
         triples = self._extract()
 
         self._add_triples(triples)

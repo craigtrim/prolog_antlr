@@ -4,3 +4,4 @@ from .binary_operator_transformation import BinaryOperatorTransformation
 from .nested_integer_transformation import NestedIntegerTransformation
 from .operator_renaming import OperatorRenaming
 from .termlist_removal_transformation import TermListRemovalTransformation
+from .nested_element_transformation import NestedElementTransformation

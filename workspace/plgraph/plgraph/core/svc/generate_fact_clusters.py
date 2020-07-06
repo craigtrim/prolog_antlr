@@ -3,9 +3,10 @@
 
 
 from graphviz import Digraph
+from plbase import BaseObject
 
 
-class GenerateFactClusters(object):
+class GenerateFactClusters(BaseObject):
     """ Generate Clusters with Prolog Facts and add edges between clusters (facts)
             if clusters (facts) are used within rules
 
@@ -24,6 +25,8 @@ class GenerateFactClusters(object):
             *   Refactored out of 'generate-graph-v2'
                 https://github.com/craigtrim/prolog_antlr/issues/10
         """
+        BaseObject.__init__(self, __name__)
+
         from plgraph.core.dmo import GraphStyleLoader
         from plgraph.core.dmo import DigraphNodeGenerator
         from plgraph.core.dmo import DigraphEdgeGenerator
@@ -71,8 +74,8 @@ class GenerateFactClusters(object):
                             "text": d_node['Text'],
                             "type": _type()})
 
-    @staticmethod
-    def _color_scheme(predicate_set: list) -> str:
+    def _color_scheme(self,
+                      predicate_set: list) -> str:
         if len(predicate_set) <= 3:
             return "orrd3"
         if len(predicate_set) <= 4:
@@ -87,16 +90,24 @@ class GenerateFactClusters(object):
             return "orrd8"
         if len(predicate_set) <= 9:
             return "orrd9"
-        raise NotImplementedError("Color Scheme Needs Attention")
 
-    @staticmethod
-    def _color_int(predicate_set: list,
+        self.logger.warning('\n'.join([
+            f"Color Scheme Needs Attention (total-predicates={len(predicate_set)})"]))
+        return "orrd9"
+
+    def _color_int(self,
+                   predicate_set: list,
                    a_triple: dict) -> str:
         for i in range(0, len(predicate_set)):
-            if predicate_set[i] == a_triple['Triple'][0]['Predicate']:
+            if not len(a_triple['Triple']):
+                continue
+            elif predicate_set[i] == a_triple['Triple'][0]['Predicate']:
                 return str(i + 1)
 
-        raise NotImplementedError
+        self.logger.warning('\n'.join([
+            f"Unknown Color Int (total-predicates={len(predicate_set)})"]))
+        # raise NotImplementedError
+        return "0"
 
     @staticmethod
     def _list_predicates(triples: list):
@@ -108,7 +119,8 @@ class GenerateFactClusters(object):
         """
         pset = set()
         for triple in triples:
-            pset.add(triple['Triple'][0]['Predicate'])
+            if len( triple['Triple']):
+                pset.add(triple['Triple'][0]['Predicate'])
 
         return sorted(pset)
 

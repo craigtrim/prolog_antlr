@@ -46,6 +46,9 @@ class BuildPrologAST(object):
                  ctx_name: str,
                  children: list) -> dict:
 
+        if not children:
+            return None
+
         def _uuid() -> str:
             if ctx_name.lower() == 'variable':
                 return self._cached_uuid_by_name(ctx_name='variable',
@@ -160,6 +163,10 @@ class BuildPrologAST(object):
     def _iter_tree(self,
                    children: list) -> list:
         results = []
+
+        if not children:
+            raise ValueError("Input List is None")
+
         for child in children:
             if type(child) == PrologParser.TermlistContext:
                 results.append(self._term_list_context(child))
@@ -207,9 +214,9 @@ class BuildPrologAST(object):
             else:
                 raise NotImplementedError(type(child))
 
-        return results
+        return [x for x in results if x and len(x)]
 
     def process(self) -> list:
-        d = self._iter_tree(self._tree.children)
+        return self._iter_tree(self._tree.children)
 
-        return d
+

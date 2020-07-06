@@ -109,4 +109,8 @@ class ArityOfOneExtractor(BaseObject):
                      "Predicate": predicate,
                      "UUID": uuid}]
 
+        if self._is_debug:
+            self.logger.warning('\n'.join([
+                "Unknown Pattern",
+                tabulate(df_names, headers='keys', tablefmt='psql')]))
         raise NotImplementedError  # an unknown pattern

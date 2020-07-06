@@ -24,6 +24,10 @@ class ParsePrologSource(object):
         self._is_debug = is_debug
 
     def process(self) -> PrologParser.P_textContext:
+        """
+
+        @return:
+        """
         lexer = PrologLexer(self._input_stream)
         stream = CommonTokenStream(lexer)
         parser = PrologParser(stream)
