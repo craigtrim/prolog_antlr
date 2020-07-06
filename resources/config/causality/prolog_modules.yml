@@ -1,6 +1,7 @@
-home: '/home/craig/git/prolognlp/'
-modules:
-    - cl/misc/misc.pro
+input: 
+    path: '/home/craig/git/prolognlp/'
+    modules:
+        - cl/misc/misc.pro
     # - cl/context/context.pro
     # - cl/date/date.pro
     # - cl/nlp/nlp.pro
@@ -9,3 +10,5 @@ modules:
     # - cl/util/util.pro
     #
     # - cl/database/database.pro
+output:
+    path: 'resources/output/prolog'

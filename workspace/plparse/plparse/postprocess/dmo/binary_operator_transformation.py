@@ -51,8 +51,14 @@ class BinaryOperatorTransformation(object):
                 return "EQ"
             if operator['text'] == ';':
                 return "OR"
+            if operator['text'] == '*':
+                return "AND"
+            if operator['text'] == '+':
+                return "OR"
+            if operator['text'] == '~':
+                return "NOT"
             if operator['text'] == '->':
-                return "UNK"  # TODO
+                return "IF"
             if operator['text'] == '/':
                 return "UNK"  # TODO
             if operator['text'] == '=':
@@ -62,8 +68,6 @@ class BinaryOperatorTransformation(object):
             if operator['text'] == '>':
                 return "UNK"  # TODO
             if operator['text'] == '-':
-                return "UNK"  # TODO
-            if operator['text'] == '+':
                 return "UNK"  # TODO
             if operator['text'] == '<':
                 return "UNK"  # TODO

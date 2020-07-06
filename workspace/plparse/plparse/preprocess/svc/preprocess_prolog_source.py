@@ -104,7 +104,7 @@ class PreprocessPrologSource(BaseObject):
         from plparse.preprocess.dmo import TransformLogicalOperators
 
         lines = self._source_lines
-        lines = RetainClausesOnly(source_lines=lines, is_debug=self._is_debug).process()
+        # lines = RetainClausesOnly(source_lines=lines, is_debug=self._is_debug).process()
         lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
         lines = TransformLogicalOperators(source_lines=lines, is_debug=self._is_debug).process()
         lines = TransformConditionals(source_lines=lines, is_debug=self._is_debug).process()

@@ -34,8 +34,8 @@ class SplitCausalityModules(BaseObject):
     def _load_src(self) -> dict:
         d_modules = {}
         
-        for relative_path in self._config['modules']:
-            absolute_path = os.path.join(self._config['home'], relative_path)            
+        for relative_path in self._config['input']['modules']:
+            absolute_path = os.path.join(self._config['input']['path'], relative_path)            
             module = FileIO.file_to_lines_by_relative_path(absolute_path)
 
             self.logger.debug('\n'.join([
@@ -48,23 +48,32 @@ class SplitCausalityModules(BaseObject):
 
         return d_modules
 
-    def process(self):       
+    def process(self):
+        from planalyze import ModuleFunctionDecomposer
+        from planalyze import SourceFunctionWriter
+        from planalyze import ParseFunctionWriter
+
         
         d_modules = self._load_src()
+
         source_lines = d_modules['/home/craig/git/prolognlp/cl/misc/misc.pro']
-
-        # print (source_lines)
-
-        for line in source_lines:
-            
-            temp = line.lower().strip()
-            temp = temp.replace(') :-', '):-')
-
-
-            if temp.endswith(') :-'):
-                print (line)
-
         
+        d_functions = ModuleFunctionDecomposer(
+            source_lines=source_lines, 
+            is_debug=self._is_debug).process()
+        
+        SourceFunctionWriter(
+            d_functions=d_functions, 
+            outdir = self._config['output']['path'], 
+            module_name='misc',
+            is_debug=self._is_debug).process()
+
+        ParseFunctionWriter(
+            d_functions=d_functions,
+            outdir = self._config['output']['path'], 
+            module_name='misc',
+            is_debug=self._is_debug).process()
+
         # parser_api = ParsePrologAPI(is_debug=self._is_debug)
         # ast = parser_api.parse(source_lines)
 

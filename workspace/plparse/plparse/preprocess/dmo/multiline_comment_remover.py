@@ -30,11 +30,16 @@ class MultilineCommentRemover(BaseObject):
         normalized = []
 
         i = 0
-        while i < len(self._source_lines):
+        tloc = len(self._source_lines)
+
+        while i < tloc:
 
             if self._source_lines[i].strip() == '/*':
-                while self._source_lines[i] != '*/':
+                while i < tloc and self._source_lines[i] != '*/':
                     i += 1
+
+            if i >= tloc:
+                break
 
             if not self._source_lines[i].strip() == '*/':
                 normalized.append(self._source_lines[i])

@@ -24,7 +24,7 @@ class ParsePrologAPI(object):
         @param ast:
         @return:
         """
-        from plparse.ast.svc import GenerateASTDataFrame
+        from plparse.postprocess.svc import GenerateASTDataFrame
 
         df = GenerateASTDataFrame(ast=ast,
                                   is_debug=self._is_debug).process()
@@ -43,7 +43,7 @@ class ParsePrologAPI(object):
         @param ast:
         @return:
         """
-        from plparse.ast.svc import PostProcessPrologAST
+        from plparse.postprocess.svc import PostProcessPrologAST
 
         ast = PostProcessPrologAST(ast=ast,
                                    is_debug=self._is_debug).process()
