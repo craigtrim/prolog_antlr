@@ -99,10 +99,12 @@ class PreprocessPrologSource(BaseObject):
         from plparse.preprocess.dmo import HandleObjectAssignment
         from plparse.preprocess.dmo import HandleObjectReferences
         from plparse.preprocess.dmo import RetainClausesOnly
+        from plparse.preprocess.dmo import HandleNullaryPredicates
 
         lines = self._source_lines
         lines = RetainClausesOnly(source_lines=lines, is_debug=self._is_debug).process()
         lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
+        lines = HandleNullaryPredicates(source_lines=lines, is_debug=self._is_debug).process()
         lines = RemoveLogStatements(source_lines=lines, is_debug=self._is_debug).process()
         lines = RemoveBlankParens(source_lines=lines, is_debug=self._is_debug).process()
         lines = HandleObjectReferences(source_lines=lines, is_debug=self._is_debug).process()
