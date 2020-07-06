@@ -93,11 +93,16 @@ class PreprocessPrologSource(BaseObject):
 
         @return:
         """
+        from plparse.preprocess.dmo import MultilineCommentRemover
+
         lines = self._source_lines
+
+        lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
+        # lines = self._remove_multiline_comments(lines)
         lines = self._remove_log_statements(lines)
-        # lines = self._induce_commas(lines)
         lines = self._remove_blank_parens(lines)
         lines = self._handle_ownership(lines)
+
 
         if self._is_debug:
             self.logger.debug("PreProcessing Complete\n")
@@ -106,5 +111,7 @@ class PreprocessPrologSource(BaseObject):
                 "\n-----------------------------------",
                 '\n'.join(lines),
                 "-----------------------------------\n"]))
+
+        raise ValueError("DONE")
 
         return lines

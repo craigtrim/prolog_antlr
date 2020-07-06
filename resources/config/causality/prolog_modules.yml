@@ -1,2 +1,11 @@
+home: '/home/craig/git/prolognlp/'
 modules:
-    - cl\nlp\nlp.pro
+    - cl/misc/misc.pro
+    # - cl/context/context.pro
+    # - cl/date/date.pro
+    # - cl/nlp/nlp.pro
+    # - cl/patterns/patterns.pro
+    # - cl/synonym/synonym.pro
+    # - cl/util/util.pro
+    #
+    # - cl/database/database.pro

@@ -1,3 +1,4 @@
 from .antlr import *
-from .antlr.bp.parser_api import ParsePrologAPI
-from .ast import *
+from .postprocess import *
+from .preprocess import *
+from .parse_prolog_api import ParsePrologAPI

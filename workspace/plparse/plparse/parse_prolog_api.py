@@ -62,7 +62,7 @@ class ParsePrologAPI(object):
         @param source_lines:
         @return:
         """
-        from plparse.antlr.svc import PreprocessPrologSource
+        from plparse.preprocess.svc import PreprocessPrologSource
         from plparse.antlr.svc import ParsePrologSource
         from plparse.antlr.svc import BuildPrologAST
 

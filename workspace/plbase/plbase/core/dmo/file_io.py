@@ -100,6 +100,12 @@ class FileIO(object):
             return myfile.read().replace('\n', ' ')
 
     @staticmethod
+    def file_to_string_by_relative_path(relative_file_path: str) -> str:
+        path = os.path.join(os.environ["PROJECT_BASE"],
+                            relative_file_path)
+        return FileIO.file_to_string(file_path=path)
+
+    @staticmethod
     def file_to_lines(file_path: str,
                       use_sort: bool = False) -> list:
         target = codecs.open(file_path,
