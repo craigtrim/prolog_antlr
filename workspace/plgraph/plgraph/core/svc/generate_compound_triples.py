@@ -73,8 +73,8 @@ class GenerateCompoundTriples(object):
                         'Text': row['Text']},
                     "Triple": triple})
 
-        if self._is_debug:
-            print(json.dumps(triples))
+        # if self._is_debug:
+        #     print(json.dumps(triples))
 
         return triples
 

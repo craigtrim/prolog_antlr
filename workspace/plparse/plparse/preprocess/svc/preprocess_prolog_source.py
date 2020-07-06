@@ -96,16 +96,17 @@ class PreprocessPrologSource(BaseObject):
         from plparse.preprocess.dmo import MultilineCommentRemover
         from plparse.preprocess.dmo import RemoveLogStatements
         from plparse.preprocess.dmo import RemoveBlankParens
+        from plparse.preprocess.dmo import HandleObjectAssignment
         from plparse.preprocess.dmo import HandleObjectReferences
+        from plparse.preprocess.dmo import RetainClausesOnly
 
         lines = self._source_lines
-
-        print (lines)
-
+        lines = RetainClausesOnly(source_lines=lines, is_debug=self._is_debug).process()
         lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
         lines = RemoveLogStatements(source_lines=lines, is_debug=self._is_debug).process()
         lines = RemoveBlankParens(source_lines=lines, is_debug=self._is_debug).process()
         lines = HandleObjectReferences(source_lines=lines, is_debug=self._is_debug).process()
+        lines = HandleObjectAssignment(source_lines=lines, is_debug=self._is_debug).process()
 
         if self._is_debug:
             self.logger.debug("PreProcessing Complete\n")

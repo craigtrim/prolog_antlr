@@ -48,8 +48,7 @@ class SplitCausalityModules(BaseObject):
 
         return d_modules
 
-    def process(self):
-        print ("Hello, World")
+    def process(self):       
         
         d_modules = self._load_src()
         source_lines = d_modules['/home/craig/git/prolognlp/cl/misc/misc.pro']
@@ -57,8 +56,8 @@ class SplitCausalityModules(BaseObject):
         parser_api = ParsePrologAPI(is_debug=self._is_debug)
         ast = parser_api.parse(source_lines)
 
-        pprint.pprint(ast)
+        # pprint.pprint(ast)
 
 
 if __name__ == "__main__":
-    SplitCausalityModules().process()
+    SplitCausalityModules(is_debug=False).process()
