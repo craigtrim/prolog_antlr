@@ -52,9 +52,19 @@ class SplitCausalityModules(BaseObject):
         
         d_modules = self._load_src()
         source_lines = d_modules['/home/craig/git/prolognlp/cl/misc/misc.pro']
+
+        for line in source_lines:
+            
+            temp = line.lower().strip()
+            temp = temp.replace(') :-', '):-')
+
+
+            if temp.endswith(') :-'):
+                print (line)
+
         
-        parser_api = ParsePrologAPI(is_debug=self._is_debug)
-        ast = parser_api.parse(source_lines)
+        # parser_api = ParsePrologAPI(is_debug=self._is_debug)
+        # ast = parser_api.parse(source_lines)
 
         # pprint.pprint(ast)
 
