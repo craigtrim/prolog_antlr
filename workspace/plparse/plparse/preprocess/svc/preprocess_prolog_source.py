@@ -100,10 +100,14 @@ class PreprocessPrologSource(BaseObject):
         from plparse.preprocess.dmo import HandleObjectReferences
         from plparse.preprocess.dmo import RetainClausesOnly
         from plparse.preprocess.dmo import HandleNullaryPredicates
+        from plparse.preprocess.dmo import TransformConditionals
+        from plparse.preprocess.dmo import TransformLogicalOperators
 
         lines = self._source_lines
         lines = RetainClausesOnly(source_lines=lines, is_debug=self._is_debug).process()
         lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
+        lines = TransformLogicalOperators(source_lines=lines, is_debug=self._is_debug).process()
+        lines = TransformConditionals(source_lines=lines, is_debug=self._is_debug).process()
         lines = HandleNullaryPredicates(source_lines=lines, is_debug=self._is_debug).process()
         lines = RemoveLogStatements(source_lines=lines, is_debug=self._is_debug).process()
         lines = RemoveBlankParens(source_lines=lines, is_debug=self._is_debug).process()
@@ -112,11 +116,10 @@ class PreprocessPrologSource(BaseObject):
 
         if self._is_debug:
             self.logger.debug("PreProcessing Complete\n")
-            self.logger.debug('\n'.join([
-                "PreProcessing Complete",
-                "\n-----------------------------------",
-                '\n'.join(lines),
-                "-----------------------------------\n"]))
+            i = 1
+            for line in lines:
+                print (f"{i}    {line}")
+                i += 1
 
         return lines
 

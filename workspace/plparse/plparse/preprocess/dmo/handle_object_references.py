@@ -31,7 +31,9 @@ class HandleObjectReferences(BaseObject):
 
         for line in self._source_lines:
             if '::' in line:
-                normalized.append(line.replace('::', ':'))
+                normalized.append(line.replace('::', '_'))
+            # elif ':' in line:
+            #     normalized.append(line.replace(':', '_'))
 
             else:
                 normalized.append(line)

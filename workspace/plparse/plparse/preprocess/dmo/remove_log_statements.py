@@ -27,7 +27,7 @@ class RemoveLogStatements(BaseObject):
 
     def process(self) -> list:
         log_statements = [x.lower().strip() for x in
-                          ['db:printTrace', '%stdIO::writef', '%']]
+                          ['db:printTrace', '%stdIO::writef', '%', 'stdio']]
 
         def _is_logging_line(a_line: str) -> bool:
             for stmt in log_statements:

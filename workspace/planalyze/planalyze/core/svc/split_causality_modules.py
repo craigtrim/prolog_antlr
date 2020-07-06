@@ -60,4 +60,4 @@ class SplitCausalityModules(BaseObject):
 
 
 if __name__ == "__main__":
-    SplitCausalityModules(is_debug=False).process()
+    SplitCausalityModules(is_debug=True).process()
