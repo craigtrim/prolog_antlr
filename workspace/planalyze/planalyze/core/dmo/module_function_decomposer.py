@@ -53,6 +53,8 @@ class ModuleFunctionDecomposer(BaseObject):
 
             if temp.endswith('):-'):
                 title = line.split('(')[0].strip()
+                if title.startswith('/*'):
+                    title = title[2:]
                 d_functions[title] = buffer
 
                 buffer = []

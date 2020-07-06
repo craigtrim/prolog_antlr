@@ -71,6 +71,8 @@ class BinaryOperatorTransformation(object):
                 return "UNK"  # TODO
             if operator['text'] == '<':
                 return "UNK"  # TODO
+            if operator['text'] == 'mod':
+                return "UNK"  # TODO
             raise NotImplementedError(f"Operator Text: {operator['text']}")
 
         def _results(items: list) -> list:

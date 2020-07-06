@@ -31,20 +31,19 @@ class SplitCausalityModules(BaseObject):
         self._is_debug = is_debug
         self._config = FileIO.file_to_yaml_by_relative_path(self.CONFIG_FILE)
 
-    def _load_src(self) -> dict:
+    def _load_src(self, relative_path:str) -> dict:
         d_modules = {}
         
-        for relative_path in self._config['input']['modules']:
-            absolute_path = os.path.join(self._config['input']['path'], relative_path)            
-            module = FileIO.file_to_lines_by_relative_path(absolute_path)
+        absolute_path = os.path.join(self._config['input']['path'], relative_path)            
+        module_lines = FileIO.file_to_lines_by_relative_path(absolute_path)
 
-            self.logger.debug('\n'.join([
-                "Loaded Module",
-                f"\tRelative Path: {relative_path}",
-                f"\tAbsolute Path: {absolute_path}",
-                f"\tTotal Size: {len(module)}"]))
+        self.logger.debug('\n'.join([
+            "Loaded Module",
+            f"\tRelative Path: {relative_path}",
+            f"\tAbsolute Path: {absolute_path}",
+            f"\tTotal Size: {len(module_lines)}"]))
 
-            d_modules[absolute_path] = module
+        d_modules[absolute_path] = module_lines
 
         return d_modules
 
@@ -53,31 +52,30 @@ class SplitCausalityModules(BaseObject):
         from planalyze import SourceFunctionWriter
         from planalyze import ParseFunctionWriter
 
-        
-        d_modules = self._load_src()
+        for module in self._config['input']['modules']:
 
-        source_lines = d_modules['/home/craig/git/prolognlp/cl/misc/misc.pro']
-        
-        d_functions = ModuleFunctionDecomposer(
-            source_lines=source_lines, 
-            is_debug=self._is_debug).process()
-        
-        SourceFunctionWriter(
-            d_functions=d_functions, 
-            outdir = self._config['output']['path'], 
-            module_name='misc',
-            is_debug=self._is_debug).process()
+            # try:
+            d_modules = self._load_src(module['path'])
+            source_lines = d_modules[f"/home/craig/git/prolognlp/{module['path']}"]
+            
+            d_functions = ModuleFunctionDecomposer(
+                source_lines=source_lines, 
+                is_debug=self._is_debug).process()
+            
+            SourceFunctionWriter(
+                d_functions=d_functions, 
+                outdir = self._config['output']['path'], 
+                module_name=module['name'],
+                is_debug=self._is_debug).process()
 
-        ParseFunctionWriter(
-            d_functions=d_functions,
-            outdir = self._config['output']['path'], 
-            module_name='misc',
-            is_debug=self._is_debug).process()
+            ParseFunctionWriter(
+                d_functions=d_functions,
+                outdir = self._config['output']['path'], 
+                module_name=module['name'],
+                is_debug=self._is_debug).process()
 
-        # parser_api = ParsePrologAPI(is_debug=self._is_debug)
-        # ast = parser_api.parse(source_lines)
-
-        # pprint.pprint(ast)
+            # except PermissionError as e:
+            #     self.logger.error(e)
 
 
 if __name__ == "__main__":

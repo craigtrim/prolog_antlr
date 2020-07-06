@@ -33,10 +33,12 @@ class SourceFunctionWriter(BaseObject):
 
     def process(self) -> dict:
         
-        path = os.path.join(self._outdir, self._module_name, 'functions/src')
+        path = os.path.join(self._outdir, self._module_name, 'functions/01 src')
         if not os.path.exists(path):
             os.makedirs(path)
 
         for function_name in self._d_functions:
             file_path = os.path.join(path, f"{function_name}.pl")
-            FileIO.lines_to_file(some_lines=self._d_functions[function_name], file_path=file_path)
+            FileIO.lines_to_file(
+                some_lines=self._d_functions[function_name], 
+                file_path=file_path)

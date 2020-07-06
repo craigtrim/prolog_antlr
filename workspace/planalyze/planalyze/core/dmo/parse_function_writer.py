@@ -31,17 +31,25 @@ class ParseFunctionWriter(BaseObject):
         self._module_name = module_name
         self._d_functions = d_functions
 
+    def _path(self,
+        relative_path:str) -> str:
+        abspath = os.path.join(self._outdir, self._module_name, relative_path)
+        if not os.path.exists(abspath):
+            os.makedirs(abspath)
+        return abspath
+
+
     def process(self) -> dict:
         from plparse import ParsePrologAPI
 
         parse_api = ParsePrologAPI(is_debug=self._is_debug)
-        
-        path = os.path.join(self._outdir, self._module_name, 'functions/tag')
-        if not os.path.exists(path):
-            os.makedirs(path)
 
+        ast_path = self._path('functions/02 ast')
+        df_path = self._path('functions/03 tsv')
+        
         for function_name in self._d_functions:
-            file_path = os.path.join(path, f"{function_name}.pl")
+            ast_file_path = os.path.join(ast_path, f"{function_name}.json")
+            df_file_path = os.path.join(df_path, f"{function_name}.tsv")
 
             source_lines = self._d_functions[function_name]
 
@@ -49,10 +57,13 @@ class ParseFunctionWriter(BaseObject):
             ast = parse_api.post_process(ast)
 
             FileIO.json_to_file(
-                out_file_path=file_path,
+                out_file_path=ast_file_path,
                 data=ast,
                 flush_data=True,
                 is_debug=False)
 
-
-            # FileIO.lines_to_file(some_lines=ast, file_path=file_path)
+            df = parse_api.as_dataframe(ast)
+            df.to_csv(
+                df_file_path, 
+                encoding='utf-8', 
+                sep='\t')

@@ -156,6 +156,14 @@ class BuildPrologAST(object):
                       ctx: PrologParser.TermContext) -> dict:
         return self._to_dict(ctx.getText(), "TermContext", ctx.children)
 
+    def _float_context(self,
+                      ctx: PrologParser.FloatContext) -> dict:
+        return self._to_dict(ctx.getText(), "FloatContext", ctx.children)
+
+    def _semicolon_context(self,
+                      ctx: PrologParser.SemicolonContext) -> dict:
+        return self._to_dict(ctx.getText(), "SemiColonContext", ctx.children)
+
     def _integer_context(self,
                          ctx: PrologParser.Integer_termContext) -> dict:
         return self._to_dict(ctx.getText(), "Integer", ctx.children)
@@ -204,6 +212,10 @@ class BuildPrologAST(object):
                 results.append(self._empty_list_context(child))
             elif type(child) == PrologParser.TermContext:
                 results.append(self._term_context(child))
+            elif type(child) == PrologParser.FloatContext:
+                results.append(self._float_context(child))
+            elif type(child) == PrologParser.SemicolonContext:
+                results.append(self._semicolon_context(child))
             elif type(child) == PrologParser.Integer_termContext \
                     or type(child) == PrologParser.IntegerContext:
                 results.append(self._integer_context(child))

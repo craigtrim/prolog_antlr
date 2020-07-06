@@ -1,14 +1,34 @@
 input: 
     path: '/home/craig/git/prolognlp/'
     modules:
-        - cl/misc/misc.pro
-    # - cl/context/context.pro
-    # - cl/date/date.pro
-    # - cl/nlp/nlp.pro
-    # - cl/patterns/patterns.pro
-    # - cl/synonym/synonym.pro
-    # - cl/util/util.pro
-    #
-    # - cl/database/database.pro
+        - name: misc
+          path: cl/misc/misc.pro
+        - name: context
+          path: cl/context/context.pro
+        - name: date
+          path: cl/date/date.pro
+        - name: nlp
+          path: cl/nlp/nlp.pro
+        - name: patterns
+          path: cl/patterns/patterns.pro
+        - name: synonym
+          path: cl/synonym/synonym.pro
+        - name: util
+          path: cl/util/util.pro
 output:
     path: 'resources/output/prolog'
+    modules:
+        - name: misc
+          path: misc/functions/03 tsv
+        - name: context
+          path: context/functions/03 tsv
+        - name: date
+          path: date/functions/03 tsv
+        - name: nlp
+          path: nlp/functions/03 tsv
+        - name: patterns
+          path: patterns/functions/03 tsv
+        - name: synonym
+          path: synonym/functions/03 tsv
+        - name: util
+          path: util/functions/03 tsv
