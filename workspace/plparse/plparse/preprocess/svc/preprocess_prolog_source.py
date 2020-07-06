@@ -19,7 +19,7 @@ class PreprocessPrologSource(BaseObject):
         """
         Created:
             2-July-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com
         """
         BaseObject.__init__(self, __name__)
         self._is_debug = is_debug
@@ -51,21 +51,21 @@ class PreprocessPrologSource(BaseObject):
 
         return normalized
 
-    @staticmethod
-    def _remove_log_statements(some_lines: list) -> list:
-        log_statements = [x.lower().strip() for x in
-                          ['db:printTrace', '%stdIO::writef', '%']]
+    # @staticmethod
+    # def _remove_log_statements(some_lines: list) -> list:
+    #     log_statements = [x.lower().strip() for x in
+    #                       ['db:printTrace', '%stdIO::writef', '%']]
 
-        def _is_logging_line(a_line: str) -> bool:
-            for stmt in log_statements:
-                if stmt in a_line.lower().strip():
-                    return True
-            return False
+    #     def _is_logging_line(a_line: str) -> bool:
+    #         for stmt in log_statements:
+    #             if stmt in a_line.lower().strip():
+    #                 return True
+    #         return False
 
-        normalized = [line for line in some_lines
-                      if not _is_logging_line(line)]
+    #     normalized = [line for line in some_lines
+    #                   if not _is_logging_line(line)]
 
-        return normalized
+    #     return normalized
 
     @staticmethod
     def _induce_commas(some_lines: list) -> list:
@@ -94,15 +94,18 @@ class PreprocessPrologSource(BaseObject):
         @return:
         """
         from plparse.preprocess.dmo import MultilineCommentRemover
+        from plparse.preprocess.dmo import RemoveLogStatements
+        from plparse.preprocess.dmo import RemoveBlankParens
+        from plparse.preprocess.dmo import HandleObjectReferences
 
         lines = self._source_lines
 
-        lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
-        # lines = self._remove_multiline_comments(lines)
-        lines = self._remove_log_statements(lines)
-        lines = self._remove_blank_parens(lines)
-        lines = self._handle_ownership(lines)
+        print (lines)
 
+        lines = MultilineCommentRemover(source_lines=lines, is_debug=self._is_debug).process()
+        lines = RemoveLogStatements(source_lines=lines, is_debug=self._is_debug).process()
+        lines = RemoveBlankParens(source_lines=lines, is_debug=self._is_debug).process()
+        lines = HandleObjectReferences(source_lines=lines, is_debug=self._is_debug).process()
 
         if self._is_debug:
             self.logger.debug("PreProcessing Complete\n")
@@ -112,6 +115,5 @@ class PreprocessPrologSource(BaseObject):
                 '\n'.join(lines),
                 "-----------------------------------\n"]))
 
-        raise ValueError("DONE")
-
         return lines
+
