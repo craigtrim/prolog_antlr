@@ -13,11 +13,11 @@ class CompoundTripleGrapher(BaseObject):
         """
         Created:
             8-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   refactored out of 'generate-graph-v2'
         Updated:
             16-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   added multi-arity extraction
                 https://github.com/craigtrim/prolog_antlr/issues/14
         """

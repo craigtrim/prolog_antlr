@@ -1,14 +1,14 @@
 input: 
     path: '/home/craig/git/prolognlp/'
     modules:
+        - name: nlp
+          path: cl/nlp/nlp.pro
         - name: misc
           path: cl/misc/misc.pro
         - name: context
           path: cl/context/context.pro
         - name: date
           path: cl/date/date.pro
-        - name: nlp
-          path: cl/nlp/nlp.pro
         - name: patterns
           path: cl/patterns/patterns.pro
         - name: synonym

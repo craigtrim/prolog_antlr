@@ -23,10 +23,10 @@ class BaseObject(object):
         """
         Created:
             9-Nov-2018
-            craig.trim@ibm.com
+            craigtrim@gmail.com
         Updated:
             26-Aug-2019
-            craig.trim@ibm.com
+            craigtrim@gmail.com
             *   use UUID for generate-tts function
                 https://github.ibm.com/GTS-CDO/unstructured-analytics/pull/833
         :param some_name:

@@ -21,7 +21,7 @@ class GenerateGraphV2(object):
         """
         Created:
             2-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   https://github.com/craigtrim/prolog_antlr/issues/2
         """
         from plgraph.core.dmo import GraphStyleLoader

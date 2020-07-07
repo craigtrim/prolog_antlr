@@ -28,7 +28,7 @@ class BinaryOperatorTransformation(object):
         """
         Created:
             3-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   https://github.com/craigtrim/prolog_antlr/issues/7
         """
         self._ast = ast

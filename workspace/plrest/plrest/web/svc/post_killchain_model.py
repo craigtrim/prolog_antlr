@@ -19,7 +19,7 @@ class PostKillChainModel(BaseObject):
         """
         Created:
             24-Mar-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   https://github.ibm.com/security-think-tank/ara_nist/issues/14
 
         Updated:

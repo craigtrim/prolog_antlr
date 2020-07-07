@@ -20,11 +20,11 @@ class BuildPrologAST(object):
         """
         Created:
             2-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   https://github.com/craigtrim/prolog_antlr/issues/2
         Updated:
             3-Jun-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   add UUID standardization
                 https://github.com/craigtrim/prolog_antlr/issues/6#issuecomment-638514140
         """

@@ -21,7 +21,7 @@ class PostMITREModel(BaseObject):
         """
         Created:
             27-Mar-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   https://github.ibm.com/security-think-tank/ara_nist/issues/20
 
         Updated:

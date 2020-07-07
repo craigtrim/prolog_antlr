@@ -12,10 +12,10 @@ class BaseTimer(object):
         """
         Created:
             9-Nov-2018
-            craig.trim@ibm.com
+            craigtrim@gmail.com
         Updated:
             26-Feb-2019
-            craig.trim@ibm.com
+            craigtrim@gmail.com
             *   add threshold in __init__
         """
         self._start = time.time()

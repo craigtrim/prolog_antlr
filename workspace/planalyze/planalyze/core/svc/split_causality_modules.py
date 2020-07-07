@@ -54,7 +54,6 @@ class SplitCausalityModules(BaseObject):
 
         for module in self._config['input']['modules']:
 
-            # try:
             d_modules = self._load_src(module['path'])
             source_lines = d_modules[f"/home/craig/git/prolognlp/{module['path']}"]
             
@@ -73,9 +72,6 @@ class SplitCausalityModules(BaseObject):
                 outdir = self._config['output']['path'], 
                 module_name=module['name'],
                 is_debug=self._is_debug).process()
-
-            # except PermissionError as e:
-            #     self.logger.error(e)
 
 
 if __name__ == "__main__":

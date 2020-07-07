@@ -9,24 +9,21 @@ from pandas import DataFrame
 from pandas import Series
 
 
-class GenerateGraphV1(object):
-    """ Generates a styled DOT graph (top-down) that is generally faithful to the AST
-        some AST summarization does occur, and element styling is applied.
-
-        This was the first visual graph generated, and may have limited practical utility.
+class GenerateCallsGraph(object):
+    """ Generates a CALLS graph
 
     Reference
-        https://github.com/craigtrim/prolog_antlr/issues/5#issuecomment-638597971"""
+        """
 
     def __init__(self,
-                 df_ast: DataFrame,
-                 graph_style: str = "gv1",
+                 calls: list,
+                 graph_style: str = "calls",
                  is_debug: bool = True):
         """
         Created:
-            2-June-2020
-            craigtrim@gmail.com.com
-            *   https://github.com/craigtrim/prolog_antlr/issues/2
+            6-June-2020
+            craig.trim@causalitylink.com
+            *   based on 'generate-graph-v1'
         """
         from plgraph.core.dmo import GraphStyleLoader
         from plgraph.core.dmo import NodeStyleMatcher

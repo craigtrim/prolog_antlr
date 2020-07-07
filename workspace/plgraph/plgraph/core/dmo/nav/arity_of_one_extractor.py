@@ -32,7 +32,7 @@ class ArityOfOneExtractor(BaseObject):
         """
         Created:
             16-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   based on 'arity_of_two_extractor'
                 https://github.com/craigtrim/prolog_antlr/issues/14
         """

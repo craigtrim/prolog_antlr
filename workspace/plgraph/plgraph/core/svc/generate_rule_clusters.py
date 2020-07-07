@@ -23,7 +23,7 @@ class GenerateRuleClusters(object):
         """
         Created:
             8-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   Refactored out of 'generate-graph-v2'
                 https://github.com/craigtrim/prolog_antlr/issues/10
         """

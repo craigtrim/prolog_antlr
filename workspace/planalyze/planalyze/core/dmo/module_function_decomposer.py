@@ -34,6 +34,7 @@ class ModuleFunctionDecomposer(BaseObject):
 
         buffer = []
         d_functions = {}
+        title = None
 
         def _cleanse(a_line:str) -> str:
             a_line = a_line.lower().strip()
@@ -52,10 +53,12 @@ class ModuleFunctionDecomposer(BaseObject):
                     temp = _cleanse(line)
 
             if temp.endswith('):-'):
+                if title:
+                    d_functions[title] = buffer
+
                 title = line.split('(')[0].strip()
                 if title.startswith('/*'):
                     title = title[2:]
-                d_functions[title] = buffer
 
                 buffer = []
             

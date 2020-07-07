@@ -10,7 +10,7 @@ class UUIDTransform(object):
         """
         Created:
             8-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   refactored out of 'generate-graph-v2'
         """
         self._d_node_ids = {}

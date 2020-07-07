@@ -38,7 +38,7 @@ class ArityOfTwoExtractor(BaseObject):
         """
         Created:
             6-June-2020
-            craig.trim@ibm.com
+            craigtrim@gmail.com
             *   refactored out of 'generate-graph-v2'
         """
         BaseObject.__init__(self, __name__)

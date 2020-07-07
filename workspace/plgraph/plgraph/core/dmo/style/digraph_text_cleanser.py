@@ -17,7 +17,7 @@ class DigraphTextCleanser(object):
         """
         Created:
             21-Nov-2019
-            craig.trim@ibm.com
+            craigtrim@gmail.com.com
             *   https://github.com/craigtrim/prolog_antlr/issues/3
         :param graph_style:
             a graph style defined in a graph stylesheet
