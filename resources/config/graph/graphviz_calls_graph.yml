@@ -13,36 +13,88 @@ graph:
 nodes: # node style
   - node:
       conditions:
-        type: variable
+        type: misc
       style:
-        shape: 'doublecircle'
+        shape: 'rectangle'
+        width: '1.5'
         fixedsize: 'true'
         fontcolor: 'black'
         fontsize: '10'
+        colorscheme: 'blues9'
+        color: '2'
+        style: 'filled'
   - node:
       conditions:
-        type: binary
+        type: context
       style:
-        shape: 'doublecircle'
+        shape: 'rectangle'
+        width: '1.5'
         fixedsize: 'true'
         fontcolor: 'black'
-        fontsize: '10'
+        colorscheme: 'blues9'
+        color: '3'
+        style: 'filled'
   - node:
       conditions:
-        type: string
+        type: date
       style:
-        shape: 'doublecircle'
+        shape: 'rectangle'
+        width: '1.5'
         fixedsize: 'true'
         fontcolor: 'black'
         fontsize: '10'
+        colorscheme: 'blues9'
+        color: '4'
+        style: 'filled'
   - node:
       conditions:
-        type: name
+        type: nlp
       style:
-        shape: 'doublecircle'
+        shape: 'rectangle'
+        width: '1.5'
         fixedsize: 'true'
         fontcolor: 'black'
         fontsize: '10'
+        colorscheme: 'blues9'
+        color: '5'
+        style: 'filled'
+  - node:
+      conditions:
+        type: patterns
+      style:
+        shape: 'rectangle'
+        width: '1.5'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+        colorscheme: 'blues9'
+        color: '6'
+        style: 'filled'
+  - node:
+      conditions:
+        type: synonym
+      style:
+        shape: 'rectangle'
+        width: '1.5'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+        colorscheme: 'blues9'
+        color: '7'
+        style: 'filled'
+  - node:
+      conditions:
+        type: util
+      style:
+        shape: 'rectangle'
+        width: '1.5'
+        fixedsize: 'true'
+        fontcolor: 'black'
+        fontsize: '10'
+        colorscheme: 'blues9'
+        color: '8'
+        style: 'filled'
+                    
 
   - node:
       conditions:
@@ -130,52 +182,15 @@ nodes: # node style
         fontsize: '8'
 
 edges: # edge style
-#  - edge:
-#      predicate: type-of
-#      display_label: False
-#      style:
-#        colorscheme: 'bupu9'
-#        color: '3'
-#        arrowhead: 'vee'
-#        style: 'dotted'
-#        arrowsize: '0.5'
-#  - edge:
-#      predicate: variant
-#      display_label: False
-#      style:
-#        colorscheme: 'bupu9'
-#        color: '4'
-#        arrowhead: 'vee'
-#        style: 'solid'
-#        arrowsize: '1.0'
-#        fontsize: '8'
-#  - edge:
-#      predicate: implies
-#      display_label: True
-#      style:
-#        colorscheme: 'bupu9'
-#        color: '5'
-#        arrowhead: normal
-#        fontsize: '8'
-#        weight: '1.5'
-#  - edge:
-#      predicate: similarto
-#      display_label: True
-#      style:
-#        colorscheme: 'bupu9'
-#        color: '6'
-#        arrowhead: normal
-#        fontsize: '8'
-#        weight: '3.0'
-#  - edge:
-#      predicate: requires
-#      display_label: True
-#      style:
-#        colorscheme: 'bupu9'
-#        color: '7'
-#        arrowhead: normal
-#        fontsize: '8'
-#        weight: '2.0'
+  - edge:
+      predicate: calls
+      display_label: False
+      style:
+        colorscheme: 'bupu9'
+        color: '3'
+        arrowhead: 'vee'
+        style: 'dotted'
+        arrowsize: '0.5'
   - edge:
       display_label: True
       style:

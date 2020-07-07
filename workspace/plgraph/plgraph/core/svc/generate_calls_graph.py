@@ -59,7 +59,7 @@ class GenerateCallsGraph(object):
         :param graph:
         """
 
-        def _label(d_call: dict) -> dict:
+        def _properties(d_call: dict) -> dict:
             row_type = d_call['path'].lower()
             row_text = d_call['module']
 
@@ -72,7 +72,7 @@ class GenerateCallsGraph(object):
 
             for call in self._calls:
                 node_id = self._node_id(path=call['path'], module=call['module'])
-                d[node_id] = _label(call)
+                d[node_id] = _properties(call)
 
             return d
 
@@ -90,12 +90,11 @@ class GenerateCallsGraph(object):
         for call in self._calls:
 
             subj = self._node_id(path=call['path'], module=call['module'])
-
             for call_node in call['calls']:
                 obj = self._node_id(path=call_node, module=call['module'])
 
                 graph = self._edge_generator.process(graph,
-                                                    subj, ".", obj)
+                                                    subj, "calls", obj)
 
     def process(self,
                 file_name: str,
@@ -112,6 +111,7 @@ class GenerateCallsGraph(object):
         self._add_nodes(graph)
         self._add_edges(graph)
 
+
         graph.render(file_name)
 
         return graph
@@ -121,16 +121,17 @@ def main():
     import uuid
     from plbase import FileIO
 
-    d_calls = FileIO.file_to_json('resources/output/analysis/calls.json')
+    calls = FileIO.file_to_json('resources/output/analysis/calls.json')
     # print (d_calls)
 
     outdir = os.path.join(os.environ['PROJECT_BASE'], 'resources/output/graphviz/calls')
     if not os.path.exists(outdir):
         os.makedirs(outdir)
 
-    outfile = os.path.join(outdir, f"CALLS-{str(uuid.uuid1())}.d".upper())
+    title = f"calls.txt".upper()
+    outfile = os.path.join(outdir, title)
 
-    GenerateCallsGraph(d_calls, is_debug=True).process(file_name=outfile, engine="fdp")
+    GenerateCallsGraph(calls, is_debug=True).process(file_name=outfile, engine="fdp")
 
 
 if __name__ == "__main__":

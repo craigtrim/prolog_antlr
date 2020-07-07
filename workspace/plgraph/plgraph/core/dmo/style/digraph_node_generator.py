@@ -70,8 +70,20 @@ class DigraphNodeGenerator(object):
                 return ""
             return d_node_style['text'].replace('P0', a_node_text)
 
+        def _split(a_label:str) -> str:
+            master = []
+            buffer = []
+            for ch in a_label:
+                if ch.isupper():
+                    if len(buffer) > 3:
+                        master.append(''.join(buffer))
+                        buffer = []
+                buffer.append(ch)
+            master.append(''.join(buffer))
+            return "\\n".join(master)
+
         graph.node(a_node_id,
-                   label=_label(),
+                   label=_split(_label()),
                    **d_node_style)
 
         return graph

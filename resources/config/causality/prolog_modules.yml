@@ -20,15 +20,15 @@ output:
     modules:
         - name: misc
           path: misc/functions/03 tsv
-        - name: context
-          path: context/functions/03 tsv
-        - name: date
-          path: date/functions/03 tsv
-        - name: nlp
-          path: nlp/functions/03 tsv
-        - name: patterns
-          path: patterns/functions/03 tsv
-        - name: synonym
-          path: synonym/functions/03 tsv
-        - name: util
-          path: util/functions/03 tsv
+        # - name: context
+        #   path: context/functions/03 tsv
+        # - name: date
+        #   path: date/functions/03 tsv
+        # - name: nlp
+        #   path: nlp/functions/03 tsv
+        # - name: patterns
+        #   path: patterns/functions/03 tsv
+        # - name: synonym
+        #   path: synonym/functions/03 tsv
+        # - name: util
+        #   path: util/functions/03 tsv
