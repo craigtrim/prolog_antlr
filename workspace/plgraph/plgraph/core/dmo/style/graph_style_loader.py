@@ -60,6 +60,8 @@ class GraphStyleLoader(object):
                 return "resources/config/graph/graphviz_gv1_graph.yml"
             if "gv2" in some_style_name.lower():
                 return "resources/config/graph/graphviz_gv2_graph.yml"
+            if "calls" in some_style_name.lower():
+                return "resources/config/graph/graphviz_calls_graph.yml"
             raise NotImplementedError(f"Unrecognized Style: {some_style_name}")
 
         return self._file_to_yaml_by_relative_path(

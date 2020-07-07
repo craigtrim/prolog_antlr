@@ -22,7 +22,7 @@ class GenerateCallsGraph(object):
         """
         Created:
             6-June-2020
-            craig.trim@causalitylink.com
+            craigtrim@gmail.com
             *   based on 'generate-graph-v1'
         """
         from plgraph.core.dmo import GraphStyleLoader
@@ -30,7 +30,7 @@ class GenerateCallsGraph(object):
         from plgraph.core.dmo import DigraphNodeGenerator
         from plgraph.core.dmo import DigraphEdgeGenerator
 
-        self._df_ast = df_ast
+        self._calls = calls
         self._is_debug = is_debug
 
         self._style_loader = GraphStyleLoader(style_name=graph_style,
@@ -45,13 +45,13 @@ class GenerateCallsGraph(object):
         self._edge_generator = DigraphEdgeGenerator(is_debug=self._is_debug,
                                                     graph_style=self._style_loader.style())
 
-    def _iter(self,
-              items: list):
-        pass
-
     @staticmethod
     def _cleanse(a_uuid: str) -> str:
         return f"UUID_{a_uuid.replace('-', '_').upper()}"
+
+    @staticmethod
+    def _node_id(path: str, module: str) -> str:
+        return f"{path}_{module}".upper()
 
     def _add_nodes(self,
                    graph: Digraph) -> None:
@@ -59,78 +59,50 @@ class GenerateCallsGraph(object):
         :param graph:
         """
 
-        def _label(a_row: Series) -> dict:
-            row_type = a_row['Type'].lower()
-            row_text = a_row['Text']
-
-            if row_type == 'clause':
-                return {'type': row_type,
-                        'label': 'Clause',
-                        'text': row_text}
-            elif row_type == 'atomic':
-                return {'type': row_type,
-                        'label': '',
-                        'text': row_text}
-            elif row_type == 'binary':
-                return {'type': row_type,
-                        'label': row_text.upper(),
-                        'text': row_text}
-            elif row_type == 'string':
-                return {'type': row_type,
-                        'label': row_text,
-                        'text': row_text}
-            elif row_type == 'name':
-                return {'type': row_type,
-                        'label': row_text,
-                        'text': row_text}
-            elif row_type == 'termlist':
-                return {'type': row_type,
-                        'label': 'List',
-                        'text': row_text}
-            elif row_type == 'variable':
-                return {'type': row_type,
-                        'label': row_text,
-                        'text': row_text}
+        def _label(d_call: dict) -> dict:
+            row_type = d_call['path'].lower()
+            row_text = d_call['module']
 
             return {'type': row_type,
-                    'label': row_type,
+                    'label': row_text,
                     'text': row_text}
 
         def _node_dict() -> dict:
             d = {}
 
-            for _, row in self._df_ast.iterrows():
-                d[self._cleanse(row['UUID'])] = _label(row)
+            for call in self._calls:
+                node_id = self._node_id(path=call['path'], module=call['module'])
+                d[node_id] = _label(call)
 
             return d
 
         d_nodes = _node_dict()
 
-        for node_id in d_nodes:
+        for call in self._calls:
+            node_id = self._node_id(path=call['path'], module=call['module'])
             graph = self._node_generator.process(graph,
                                                  a_node_id=node_id,
                                                  a_node=d_nodes[node_id])
 
     def _add_edges(self,
                    graph: Digraph) -> None:
-        for _, row in self._df_ast.iterrows():
 
-            if not row['Parent']:
-                continue
-            if not row['UUID']:
-                raise ValueError("Missing Expected UUID")
+        for call in self._calls:
 
-            graph = self._edge_generator.process(graph,
-                                                 self._cleanse(row["Parent"]),
-                                                 ".",
-                                                 self._cleanse(row["UUID"]))
+            subj = self._node_id(path=call['path'], module=call['module'])
+
+            for call_node in call['calls']:
+                obj = self._node_id(path=call_node, module=call['module'])
+
+                graph = self._edge_generator.process(graph,
+                                                    subj, ".", obj)
 
     def process(self,
                 file_name: str,
                 engine: str,
                 file_extension: str = "png") -> Digraph:
         graph = Digraph(engine=engine,
-                        comment='Schema',
+                        comment='Calls',
                         format=file_extension,
                         name=file_name)
 
@@ -140,9 +112,26 @@ class GenerateCallsGraph(object):
         self._add_nodes(graph)
         self._add_edges(graph)
 
-        graph.save("graph_v1.d", os.environ["PROJECT_BASE"])
-
-        graph.render(os.path.join(os.environ["PROJECT_BASE"],
-                                  f"resources/output/{file_name}"))
+        graph.render(file_name)
 
         return graph
+
+
+def main():
+    import uuid
+    from plbase import FileIO
+
+    d_calls = FileIO.file_to_json('resources/output/analysis/calls.json')
+    # print (d_calls)
+
+    outdir = os.path.join(os.environ['PROJECT_BASE'], 'resources/output/graphviz/calls')
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
+
+    outfile = os.path.join(outdir, f"CALLS-{str(uuid.uuid1())}.d".upper())
+
+    GenerateCallsGraph(d_calls, is_debug=True).process(file_name=outfile, engine="fdp")
+
+
+if __name__ == "__main__":
+    main()
